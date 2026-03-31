@@ -1,0 +1,74 @@
+## Paquetería de GEE
+import ee
+
+## Carga paquetes
+import pandas as pd
+from datetime import datetime
+import geopandas as gpd 
+import json
+import tomllib
+from pathlib import Path
+import polars as pl
+
+## Trigger the authentication flow.
+ee.Authenticate()
+
+## Initialize the library.
+ee.Initialize(project="pib-geoespacial")
+
+## Carga funciones
+from gee.gee_functions import (calculateMonthlyNDVI, calculateMonthlyPrecipitation, calculateMonthlyNDBI, 
+                              calculateMonthlyTemperature, calculateQuarterlyAggregates, calculateMonthlyEVI, 
+                              calculateMonthlyLST)
+
+## Carga configuración
+FP = Path(".")
+
+with open(FP/"config"/"general"/"config.toml", "rb") as f:
+    config = tomllib.load(f)
+
+## Subset the El Salvador feature from countries.
+## Load country features from Large Scale International Boundary (LSIB) dataset.
+countries = ee.FeatureCollection(config["LSIB"])
+el_salvador = countries.filter(ee.Filter.eq('ADM0_NAME', 'El Salvador'))
+slv = el_salvador.geometry()
+
+## Definimos fechas de inicio y fin de consulta de datos
+startDate = ee.Date(config["start_date"])
+endDate = ee.Date(pd.to_datetime('today'))
+
+## ---------------- Pluviosidad (GEE) 
+dateRangeMillis_rainfall = ee.List.sequence(startDate.millis(), endDate.millis(), 2.628e+9)
+
+## --------------------------------------
+##### Definimos colección de Imágenes
+## --------------------------------------
+## Colección de imágenes CHIRPS (precipitación mensual).
+chirpsCollection = ee.ImageCollection('UCSB-CHG/CHIRPS/PENTAD').filterBounds(slv).filterDate(startDate, endDate)
+
+## ---------------- Pluviosidad (GEE) 
+acumula = []
+
+for i in dateRangeMillis_rainfall.getInfo():
+
+    acumula.append(calculateMonthlyPrecipitation(i, chirpsCollection, slv))
+    print(acumula[-1])
+
+## Creamos DataFrame
+precip = pd.concat([pd.DataFrame({ k : [v] for k,v in datos.items()}) for datos in acumula], ignore_index = True)
+
+## Eliminamos datos que aún no han sido registrados por el rezago de actualización
+precip = precip.query("precipitation!=-9999")
+
+## Convertimos el DataFrame a Polars
+precip = pl.from_pandas(precip)
+
+### Agregamos los datos a trimestre
+precip = precip.group_by_dynamic("datetime", every="1q", closed="left").agg(pl.mean("precipitation"))
+
+### Renombramos nombre
+precip = precip.rename({"precipitation" : "precip"})
+
+### Guardamos datos en formato Delta Table
+DL_FP = FP/config["delta_lake_fp"] / "precip"
+precip.write_delta(DL_FP)

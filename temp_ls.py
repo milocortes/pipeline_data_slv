@@ -1,0 +1,83 @@
+## Paquetería de GEE
+import ee
+
+## Carga paquetes
+import pandas as pd
+from datetime import datetime
+import geopandas as gpd 
+import json
+import tomllib
+from pathlib import Path
+import polars as pl
+
+## Trigger the authentication flow.
+ee.Authenticate()
+
+## Initialize the library.
+ee.Initialize(project="pib-geoespacial")
+
+## Carga funciones
+from gee.gee_functions import (calculateMonthlyNDVI, calculateMonthlyPrecipitation, calculateMonthlyNDBI, 
+                              calculateMonthlyTemperature, calculateQuarterlyAggregates, calculateMonthlyEVI, 
+                              calculateMonthlyLST)
+
+## Carga configuración
+FP = Path(".")
+
+with open(FP/"config"/"general"/"config.toml", "rb") as f:
+    config = tomllib.load(f)
+
+## Subset the El Salvador feature from countries.
+## Load country features from Large Scale International Boundary (LSIB) dataset.
+countries = ee.FeatureCollection(config["LSIB"])
+el_salvador = countries.filter(ee.Filter.eq('ADM0_NAME', 'El Salvador'))
+slv = el_salvador.geometry()
+
+## Definimos fechas de inicio y fin de consulta de datos
+startDate = ee.Date(config["start_date"])
+endDate = ee.Date(pd.to_datetime('today'))
+
+## --------------------------------------
+## ---------------- Temperatura Superficie MODIS (GEE) 
+## --------------------------------------
+dateRangeMillis_temp_sup_gee = ee.List.sequence(startDate.millis(), endDate.millis(), 2.628e+9)
+
+
+## --------------------------------------
+## ----- Definimos colección de Imágenes
+## --------------------------------------
+## Colección de imágenes MODIS LST.
+lstCollection = ee.ImageCollection(
+                        'MODIS/061/MOD11A1'
+                ).filterBounds(
+                    slv
+                ).filterDate(
+                    startDate, endDate
+                )
+
+
+## ---------------- Temperatura Superficie MODIS (GEE) 
+acumula = []
+
+for i in dateRangeMillis_temp_sup_gee.getInfo():
+    acumula.append(calculateMonthlyLST(i, lstCollection, slv))
+    print(acumula[-1])
+
+## Creamos DataFrame
+temp_ls = pd.concat([pd.DataFrame({ k : [v] for k,v in datos.items()}) for datos in acumula], ignore_index = True)
+
+## Eliminamos datos que aún no han sido registrados por el rezago de actualización
+temp_ls = temp_ls.query("LST_Day_1km!=-9999")
+
+## Convertimos el DataFrame a Polars
+temp_ls = pl.from_pandas(temp_ls)
+
+### Agregamos los datos a trimestre
+temp_ls = temp_ls.group_by_dynamic("datetime", every="1q", closed="left").agg(pl.mean("LST_Day_1km"))
+
+### Renombramos nombre
+temp_ls = temp_ls.rename({"LST_Day_1km" : "temp_ls"})
+
+### Guardamos datos en formato Delta Table
+DL_FP = FP/config["delta_lake_fp"] / "temp_ls"
+temp_ls.write_delta(DL_FP)
