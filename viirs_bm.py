@@ -16,6 +16,10 @@ with open(FP/"config"/"general"/"config.toml", "rb") as f:
 with open(FP/"config"/"api_keys"/"api_keys.toml", "rb") as f:
     api = tomllib.load(f)
 
+## Carga Configuración de almacenamiento
+with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
+    storage_options = tomllib.load(f)
+
 # Set NASA EarthData Token (envvar or alternative recommended)
 bearer = api["keys"]["blackmarble"]
 
@@ -29,7 +33,7 @@ bm_data = bm_extract(
     gdf, # this specifies the region of interest
     product_id= "VNP46A3", # this specifies the monthly luminosity data
     #date_range=pd.date_range(config["start_date"], pd.to_datetime('today'), freq="ME"), # this specifies the months
-    date_range=pd.date_range("2025-01-01", pd.to_datetime('today'), freq="ME"), # this specifies the months
+    date_range=pd.date_range("2024-01-01", pd.to_datetime('today'), freq="ME"), # this specifies the months
     token=bearer, # this is the API bearer for NASA LAADS DAAC from Step 3
     aggfunc = ["sum"],
     variable = "AllAngle_Composite_Snow_Free", # this selects the layer we're interested in ->
@@ -53,9 +57,15 @@ bm_data = bm_data.group_by_dynamic(
 ### Renombramos date to datetime
 bm_data = bm_data.rename({"date" : "datetime"})
 
-### Guardamos datos en formato Delta Table
-DL_BM_MEAN_FP = FP/config["delta_lake_fp"] / "viirs_bm_mean"
-DL_BM_SUM_FP = FP/config["delta_lake_fp"] / "viirs_bm_sum"
+### Guardamos datos en formato Delta Table en RustFS
+bm_data.select("datetime", "viirs_bm_mean").write_delta(
+    f"s3://{config['BUCKET_NAME']}/viirs_bm_mean",
+    storage_options=storage_options,
+    mode = "overwrite"
+)
 
-bm_data.select("datetime", "viirs_bm_mean").write_delta(DL_BM_MEAN_FP)
-bm_data.select("datetime", "viirs_bm_sum").write_delta(DL_BM_SUM_FP)
+bm_data.select("datetime", "viirs_bm_sum").write_delta(
+    f"s3://{config['BUCKET_NAME']}/viirs_bm_sum",
+    storage_options=storage_options,
+    mode = "overwrite"
+)

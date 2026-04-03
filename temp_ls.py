@@ -10,12 +10,6 @@ import tomllib
 from pathlib import Path
 import polars as pl
 
-## Trigger the authentication flow.
-ee.Authenticate()
-
-## Initialize the library.
-ee.Initialize(project="pib-geoespacial")
-
 ## Carga funciones
 from gee.gee_functions import (calculateMonthlyNDVI, calculateMonthlyPrecipitation, calculateMonthlyNDBI, 
                               calculateMonthlyTemperature, calculateQuarterlyAggregates, calculateMonthlyEVI, 
@@ -26,6 +20,21 @@ FP = Path(".")
 
 with open(FP/"config"/"general"/"config.toml", "rb") as f:
     config = tomllib.load(f)
+
+## Carga Configuración de almacenamiento
+with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
+    storage_options = tomllib.load(f)
+
+## Carga GEE API Key
+gee_api_key = str(FP/"config"/"api_keys"/"pib-geoespacial-3ba5fc82e62c.json")
+
+
+## Trigger the authentication flow.
+service_account = config["service_account_gee"]
+credentials = ee.ServiceAccountCredentials(service_account, gee_api_key)
+
+## Initialize the library.
+ee.Initialize(project=config["gee_project"], credentials = credentials)
 
 ## Subset the El Salvador feature from countries.
 ## Load country features from Large Scale International Boundary (LSIB) dataset.
@@ -78,6 +87,9 @@ temp_ls = temp_ls.group_by_dynamic("datetime", every="1q", closed="left").agg(pl
 ### Renombramos nombre
 temp_ls = temp_ls.rename({"LST_Day_1km" : "temp_ls"})
 
-### Guardamos datos en formato Delta Table
-DL_FP = FP/config["delta_lake_fp"] / "temp_ls"
-temp_ls.write_delta(DL_FP)
+### Guardamos datos en formato Delta Table en RustFS
+temp_ls.write_delta(
+    f"s3://{config['BUCKET_NAME']}/temp_ls",
+    storage_options=storage_options,
+    mode = "overwrite"
+)
