@@ -8,28 +8,28 @@ evi_gee:
 
 # Run gdp_us_const_trim task
 gdp_us_const_trim:
-  uv run tasks/gdp_us_const_trim.py
+  cd services/fetch_load_data/ && uv run tasks/gdp_us_const_trim.py
 
 # Run ndbi_gee task
 ndbi_gee:
-  uv run tasks/ndbi_gee.py
+  cd services/fetch_load_data/ && uv run tasks/ndbi_gee.py
 
 # Run ndvi_gee task
 ndvi_gee:
-  uv run tasks/ndvi_gee.py
+  cd services/fetch_load_data/ && uv run tasks/ndvi_gee.py
 
 # Run precip task
 precip:
-  uv run tasks/precip.py
+  cd services/fetch_load_data/ && uv run tasks/precip.py
 
 # Run temp_air task
 temp_air:
-  uv run tasks/temp_air.py
+  cd services/fetch_load_data/ && uv run tasks/temp_air.py
 
 # Run temp_ls task
 temp_ls:
-  uv run tasks/temp_ls.py
+  cd services/fetch_load_data/ && uv run tasks/temp_ls.py
 
 # Run viirs_bm task
 viirs_bm:
-  uv run tasks/viirs_bm.py
+  cd services/fetch_load_data/ && uv run tasks/viirs_bm.py
