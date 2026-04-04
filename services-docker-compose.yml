@@ -1,0 +1,91 @@
+x-airflow-common:
+  &airflow-common
+  environment:
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__TEST_CONNECTION: "Enabled"
+    AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: 60
+    AIRFLOW__API_AUTH__JWT_SECRET: foo
+    AIRFLOW__API__SECRET_KEY: bar
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - airflow-data-volume:/data
+
+services:
+  rustfs:
+    container_name: rustfs-storage
+    ports:
+        - 9000:9000
+        - 9001:9001
+    volumes:
+        - /mnt/rustfs/data:/data
+    environment:
+        - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
+        - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+        - RUSTFS_CONSOLE_ENABLE=${RUSTFS_CONSOLE_ENABLE}
+        - RUSTFS_SERVER_DOMAINS=${RUSTFS_SERVER_DOMAINS}
+    image: rustfs/rustfs:latest
+    command: --address :9000 --console-enable --server-domains example.com
+        --access-key rustfsadmin --secret-key rustfsadmin /data
+
+  airflow-apiserver:
+    <<: *airflow-common
+
+  airflow-dag-processor:
+    <<: *airflow-common
+
+  airflow-scheduler:
+    <<: *airflow-common
+
+  airflow-worker:
+    <<: *airflow-common
+
+  airflow-triggerer:
+    <<: *airflow-common
+
+  airflow-init:
+    <<: *airflow-common
+
+  airflow-cli:
+    <<: *airflow-common
+
+  airflow-data:
+    image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:|version|}
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    # yamllint disable rule:line-length
+    command:
+      - -c
+      - |
+        if [[ -z "${AIRFLOW_UID}" ]]; then
+          echo
+          echo -e "\033[1;33mWARNING!!!: AIRFLOW_UID not set!\e[0m"
+          echo "If you are on Linux, you SHOULD follow the instructions below to set "
+          echo "AIRFLOW_UID environment variable, otherwise files will be owned by root."
+          echo "For other operating systems you can get rid of the warning with manually created .env file:"
+          echo "    See: https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#setting-the-right-airflow-user"
+          echo
+        fi
+        chown -R "${AIRFLOW_UID}:0" /data
+        exec /entrypoint airflow version
+    # yamllint enable rule:line-length
+    user: "0:0"
+volumes:
+  airflow-data-volume:
+#    networks:
+#      - app-net
+#  geo-task:
+#    image : gee-test:latest
+#    container_name : geo-task
+#    depends_on:
+#      - rustfs
+#    networks:
+#      - app-net
+#    secrets:
+#      - source: api-keys
+#        target: /pipeline_data_slv/config/api_keys/api_keys.toml
+#networks:
+#  app-net:
+
+#secrets:
+#  api-keys:
+#    file: ./config/api_keys/api_keys.toml
