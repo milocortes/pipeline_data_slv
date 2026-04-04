@@ -1,0 +1,34 @@
+services:
+  rustfs:
+    container_name: rustfs-storage
+    ports:
+        - 9000:9000
+        - 9001:9001
+    volumes:
+        - /mnt/rustfs/data:/data
+    environment:
+        - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
+        - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+        - RUSTFS_CONSOLE_ENABLE=${RUSTFS_CONSOLE_ENABLE}
+        - RUSTFS_SERVER_DOMAINS=${RUSTFS_SERVER_DOMAINS}
+    image: rustfs/rustfs:latest
+    command: --address :9000 --console-enable --server-domains example.com
+        --access-key rustfsadmin --secret-key rustfsadmin /data
+#    networks:
+#      - app-net
+#  geo-task:
+#    image : gee-test:latest
+#    container_name : geo-task
+#    depends_on:
+#      - rustfs
+#    networks:
+#      - app-net
+#    secrets:
+#      - source: api-keys
+#        target: /pipeline_data_slv/config/api_keys/api_keys.toml
+#networks:
+#  app-net:
+
+#secrets:
+#  api-keys:
+#    file: ./config/api_keys/api_keys.toml
