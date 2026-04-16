@@ -1,24 +1,30 @@
 import streamlit as st
 
-# Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
-    # Title and icon for the browser's tab bar:
-    page_title="Dashboard",
-    #page_icon="🌦️",
-    # Make the content take up the width of the page:
+    page_title="Streamlit ECharts Demo",
+    page_icon=":chart_with_upwards_trend:",
     layout="wide",
-
 )
 
-pages = {
-    "Covariables": [
-        st.Page("covariables/gdp_us_const_trim.py", title="USA GDP"),
-        st.Page("covariables/precip.py", title="Precipitación"),
-    ],
-    #"Table" : [
-    #    st.Page("table.py", title = "Table"),
-    #]
-}
-
-pg = st.navigation(pages, position="top")
+pg = st.navigation(
+    [
+        st.Page(
+            "pages/showcase.py",
+            title="Showcase",
+            icon=":material/dashboard:",
+            default=True,
+        ),
+        st.Page("pages/covariables.py", title="Covariables", icon=":material/code:"),
+    ]
+)
 pg.run()
+
+with st.sidebar:
+    st.markdown(
+        ":material/code: [streamlit-echarts](https://github.com/andfanilo/streamlit-echarts)"
+    )
+    st.caption("Made in :streamlit: by [@andfanilo](https://andfanilo.com)")
+    st.markdown(
+        '<div style="margin-top: 0.75em;"><a href="https://www.buymeacoffee.com/andfanilo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174" style="border-radius: 12px;"></a></div>',
+        unsafe_allow_html=True,
+    )
