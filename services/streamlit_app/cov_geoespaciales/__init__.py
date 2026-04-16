@@ -9,7 +9,7 @@ from .geoespaciales import render_precip
 
 RENDER_GEOESPACIAL = {
     "EVI"  : render_evi_gee, 
-    "USA GDP" : render_gdp_us_const_trim, 
+    #"USA GDP" : render_gdp_us_const_trim, 
     "NDBI" : render_ndbi_gee, 
     "NDVI" : render_ndvi_gee, 
     "Precipitación" : render_precip 

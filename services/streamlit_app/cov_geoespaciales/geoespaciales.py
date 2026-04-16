@@ -24,7 +24,7 @@ with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
 
 
 ## Cargamos tablas 
-geospatial_vars = ["evi_gee", "gdp_us_const_trim", "ndbi_gee", "ndvi_gee", "precip"]
+geospatial_vars = ["evi_gee", "ndbi_gee", "ndvi_gee", "precip"]
 
 geospatial_data = {
     geo : pl.read_delta(
