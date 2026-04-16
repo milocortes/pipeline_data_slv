@@ -1,5 +1,4 @@
 from .geoespaciales import render_evi_gee
-from .geoespaciales import render_gdp_us_const_trim
 from .geoespaciales import render_ndbi_gee
 from .geoespaciales import render_ndvi_gee
 from .geoespaciales import render_precip
