@@ -12,7 +12,7 @@ from pyecharts.charts import Line
 #st.title("Covariables")
 
 with st.sidebar:
-    st.header("Configuration")
+    st.header("Covariables")
 
     selected_category = st.selectbox(
         label="Categoría",

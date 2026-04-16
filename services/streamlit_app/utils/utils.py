@@ -10,6 +10,8 @@ import pyecharts.options as opts
 from pyecharts.charts import Line
 import pandas as pd 
 
+import time 
+
 ## Diccionario de nombres de archivos raw del Banco de la República 
 BR_VAR_NAME : Dict[str,str]= {
     "indice_vol_encad" : "Producto Interno Bruto trimestral por el enfoque de la producción", 
@@ -47,14 +49,73 @@ def load_delta_table(
 
 
 ## Función que crea la gráfica de serie de tiempo
-def time_series_plot(data : Dict[str, pl.DataFrame], 
-                     ts_var : str, 
+def time_series_plot(ts_var : str, 
                      metadata : Dict[str, str], 
                      config : Dict[str,str], 
                      storage_config : Dict[str,str]
     ) -> None:
     
     st.title(metadata["descripcion"])
+
+    ## Cargamos los datos de Delta Lake al llamar a la función
+    data = load_delta_table(ts_var, config, storage_config)
+
+    if not data.is_empty():
+        data2plot = data.with_columns(
+            pl.col(ts_var).round(3),
+            pl.col("datetime").dt.year().cast(pl.Utf8) + "Q" + pl.col("datetime").dt.quarter().cast(pl.Utf8) # Ajustamos el trimestre
+            ).to_numpy()
+
+        linea = (
+            Line()
+            .add_xaxis(xaxis_data=[item[0] for item in data2plot])
+            .add_yaxis(
+                series_name="",
+                y_axis=[item[1] for item in data2plot],
+                yaxis_index=0,
+                #is_smooth=True,
+                is_symbol_show=False,
+            )
+            .set_global_opts(
+                title_opts=opts.TitleOpts(title=metadata["variable"]),
+                tooltip_opts=opts.TooltipOpts(trigger="axis"),
+
+                yaxis_opts=opts.AxisOpts(
+                    type_="value",
+                    name_location="start",
+                    min_=round(data.select(ts_var).min().item(), 2),
+                    max_=round(data.select(ts_var).max().item(), 2) ,
+                    is_scale=True,
+                    axistick_opts=opts.AxisTickOpts(is_inside=False),
+                ),
+            )
+        )
+
+        
+        st_pyecharts(linea)
+    else:
+        st.warning('La Tabla no está disponible', icon="⚠️")
+
+    st.markdown(
+        f"""
+        * **Frecuencia** : {metadata['frecuencia_actualizacion']} 
+        * **Frecuencia de Actualización** : {metadata['frecuencia_actualizacion_delta']}
+        * **Rezago** : {metadata['rezago_fecha_actual']}
+        * **Fuente** : {metadata['fuente']}
+        """
+    )
+
+## Función que crea la gráfica de serie de tiempo y tiene boton de carga de archivo
+def time_series_plot(ts_var : str, 
+                     metadata : Dict[str, str], 
+                     config : Dict[str,str], 
+                     storage_config : Dict[str,str]
+    ) -> None:
+    
+    st.title(metadata["descripcion"])
+
+    ## Cargamos los datos de Delta Lake al llamar a la función
+    data = load_delta_table(ts_var, config, storage_config)
 
     if not data.is_empty():
         data2plot = data.with_columns(
@@ -102,9 +163,22 @@ def time_series_plot(data : Dict[str, pl.DataFrame],
     )
 
     if ts_var in ["consumo_elect_total", "export_usd_fob", "import_usd_cif", "indice_vol_encad", "remesas_usd_trim"]:
-        uploaded_file = st.file_uploader("Sube los datos para actualizar la tabla", type=["csv"])
+        
+        if "upload_key" not in st.session_state:
+            st.session_state["upload_key"] = 0
+
+        #def reset_uploader():
+        #    st.session_state["upload_key"] += 1
+
+
+        uploaded_file = st.file_uploader("**Sube los datos**", key=st.session_state["upload_key"], type=["csv"])
+
         if uploaded_file !=None:
+            ### Cargamos y guardamos en Delta Lake el archivo suministrado por el usuario
             transforma_and_load_bc(ts_var, uploaded_file, config, storage_config)
+            #st.button("Reset", on_click=reset_uploader)
+            st.session_state["upload_key"] += 1
+            #st.success('Se limpio caché', icon="✅")
             ### Booteamos la aplicación para cargar los datos recientemente actualizados
             st.rerun()
 
@@ -188,3 +262,4 @@ def transforma_and_load_bc( ts_var : str,
     ### Mensaje de acción exitosa
     st.success('La tabla se actualizó exitosamente', icon="✅")
 
+    time.sleep(1)
