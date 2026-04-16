@@ -4,6 +4,7 @@ import textwrap
 import streamlit as st
 
 from cov_geoespaciales import RENDER_GEOESPACIAL
+from cov_administrativas import RENDER_ADMINISTRATIVAS
 
 from streamlit_echarts import st_pyecharts
 from pyecharts.charts import Line
@@ -21,7 +22,7 @@ with st.sidebar:
     )
 
     series_by_category = (
-        RENDER_GEOESPACIAL if selected_category == "Geoespaciales" else RENDER_GEOESPACIAL
+        RENDER_GEOESPACIAL if selected_category == "Geoespaciales" else RENDER_ADMINISTRATIVAS
     )
 
 
