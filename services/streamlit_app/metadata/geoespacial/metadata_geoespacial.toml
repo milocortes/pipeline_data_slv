@@ -1,0 +1,87 @@
+[disaster_occurrence]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[dmsp_csm_sum]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[evi_gee]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[ndbi_gee]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[ndvi_gee]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[ndvi_wfp]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[precip]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[temp_air]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[temp_ls]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[viirs_bm_sum]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""
+
+[viirs_csm_sum]
+variable = ""
+descripcion = ""
+fuente = ""
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = ""
+rezago_fecha_actual = ""

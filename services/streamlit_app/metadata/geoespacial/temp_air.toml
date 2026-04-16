@@ -1,7 +1,0 @@
-[config]
-variable = "temp_air"
-descripcion = "Temperatura del aire (°C)"
-fuente = "ECMWF ERA5 (GEE)"
-frecuencia_actualizacion = "Mensualmente"
-frecuencia_actualizacion_delta = "Monthly"
-rezago_fecha_actual = "Con un rezago de 1-2 meses respecto a la fecha actual. "
