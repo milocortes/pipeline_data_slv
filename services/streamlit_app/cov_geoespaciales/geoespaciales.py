@@ -27,7 +27,7 @@ with open(FP/"metadata"/"geoespacial"/"metadata_geoespacial.toml", "rb") as f:
     metadata = tomllib.load(f)
 
 ## Cargamos tablas 
-geospatial_vars = ["evi_gee", "ndbi_gee", "ndvi_gee", "precip"]
+geospatial_vars = ["evi_gee", "ndbi_gee", "ndvi_gee", "precip", "temp_air", "temp_ls"]
 
 geospatial_data = {
     geo : pl.read_delta(
@@ -97,3 +97,9 @@ def render_ndvi_gee():
 
 def render_precip():
     time_series_plot(geospatial_data["precip"], "precip", metadata["precip"])
+
+def render_temp_air():
+    time_series_plot(geospatial_data["temp_air"], "temp_air", metadata["temp_air"])
+    
+def render_temp_ls():
+    time_series_plot(geospatial_data["temp_ls"], "temp_ls", metadata["temp_ls"])
