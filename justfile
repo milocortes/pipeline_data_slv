@@ -4,7 +4,7 @@ default:
 
 # Run evi_gee task
 evi_gee:
-  uv run tasks/evi_gee.py
+  cd services/fetch_load_data/ && uv run tasks/evi_gee.py
 
 # Run gdp_us_const_trim task
 gdp_us_const_trim:

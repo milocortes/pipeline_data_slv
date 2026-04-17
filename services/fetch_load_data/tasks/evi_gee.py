@@ -72,8 +72,11 @@ for i in listOfDates.getInfo():
     acumula.append(calculateMonthlyEVI(i, modisCollectionEVI, slv))
     print(acumula[-1])
 
+## Eliminamos None
+acumula = [x for x in acumula if x is not None]
+
 ## Creamos DataFrame
-evi_gee = pd.concat([pd.DataFrame({ k : [v] for k,v in datos.items()}) for datos in acumula[1:]], ignore_index = True)
+evi_gee = pd.concat([pd.DataFrame({ k : [v] for k,v in datos.items()}) for datos in acumula], ignore_index = True)
 
 ## Eliminamos datos que aún no han sido registrados por el rezago de actualización
 evi_gee = evi_gee.query("evi_value!=-9999")
