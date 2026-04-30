@@ -10,11 +10,12 @@ pg = st.navigation(
     [
         st.Page(
             "pages/showcase.py",
-            title="Showcase",
+            title="Home",
             icon=":material/dashboard:",
             default=True,
         ),
         st.Page("pages/covariables.py", title="Covariables", icon=":material/code:"),
+        st.Page("pages/forecast_arimax.py", title = "Pronóstico ARIMAX", icon = "🚨")
     ]
 )
 pg.run()

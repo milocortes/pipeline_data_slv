@@ -1,8 +1,12 @@
 import streamlit as st
 
 
-st.title(":material/bar_chart: ECharts Gallery")
+st.title(":material/bar_chart: Aplicación para el Pronóstico del IVE")
 st.markdown(
-    "This dashboard is a showcase of **streamlit-echarts**, demonstrating how to integrate "
-    "highly interactive ECharts visualizations into Streamlit apps using real-world enterprise data.  \n"
+    """
+    La aplicación gestiona el Backend de datos para el Pronóstico del IVE y está compuesta por las vistas de : 
+    * Administración de Covariables.
+    * Pronóstico de los modelos lineales ARIMAX.
+    * Pronóstico de los modelos de Aprendizaje de Máquina. 
+    """
 )
