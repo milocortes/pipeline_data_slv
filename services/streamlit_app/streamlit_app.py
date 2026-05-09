@@ -15,7 +15,7 @@ pg = st.navigation(
             default=True,
         ),
         st.Page("pages/covariables.py", title="Covariables", icon=":material/code:"),
-        st.Page("pages/forecast_arimax.py", title = "Pronóstico ARIMAX", icon = "🚨")
+        st.Page("pages/forecast_arimax.py", title = "Pronóstico Modelos Lineales", icon = "🚨")
     ]
 )
 pg.run()

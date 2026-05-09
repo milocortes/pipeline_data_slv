@@ -3,7 +3,7 @@ from jinja2 import Template
 
 from models import get_available_cov_arimax
 
-st.title("Pronostico Modelos ARIMAX")
+st.title("Pronostico Modelos Lineales ARIMAX")
 
 test_disponibilidad = get_available_cov_arimax()
 

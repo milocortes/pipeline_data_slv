@@ -32,6 +32,21 @@ def render_remesas_usd_trim():
 def render_consumo_elect_total():
     time_series_plot("consumo_elect_total", metadata["consumo_elect_total"], config, storage_options)
 
+def render_consumo_elect_al_publico():
+    time_series_plot("consumo_elect_al_publico", metadata["consumo_elect_al_publico"], config, storage_options)
+
+def render_consumo_elect_comercio():
+    time_series_plot("consumo_elect_comercio", metadata["consumo_elect_comercio"], config, storage_options)
+
+def render_consumo_elect_especiales():
+    time_series_plot("consumo_elect_especiales", metadata["consumo_elect_especiales"], config, storage_options)
+
+def render_consumo_elect_industria():
+    time_series_plot("consumo_elect_industria", metadata["consumo_elect_industria"], config, storage_options)
+
+def render_consumo_elect_residencial():
+    time_series_plot("consumo_elect_residencial", metadata["consumo_elect_residencial"], config, storage_options)
+
 def render_export_usd_fob():
     time_series_plot("export_usd_fob", metadata["export_usd_fob"], config, storage_options)
     

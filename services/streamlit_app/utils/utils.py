@@ -171,11 +171,14 @@ def time_series_plot(ts_var : str,
         #    st.session_state["upload_key"] += 1
 
 
-        uploaded_file = st.file_uploader("**Sube los datos**", key=st.session_state["upload_key"], type=["csv"])
+        uploaded_file = st.file_uploader("**Sube los datos**", key=st.session_state["upload_key"], type=["csv", "xlsx"])
 
         if uploaded_file !=None:
             ### Cargamos y guardamos en Delta Lake el archivo suministrado por el usuario
-            transforma_and_load_bc(ts_var, uploaded_file, config, storage_config)
+            if ts_var in ["consumo_elect_total"]:
+                transforma_and_load_electricidad(ts_var, uploaded_file, config, storage_config)
+            else:
+                transforma_and_load_bc(ts_var, uploaded_file, config, storage_config)
             #st.button("Reset", on_click=reset_uploader)
             st.session_state["upload_key"] += 1
             #st.success('Se limpio caché', icon="✅")
@@ -258,6 +261,83 @@ def transforma_and_load_bc( ts_var : str,
         storage_options=storage_config,
         mode = "overwrite"
     )
+
+    ### Mensaje de acción exitosa
+    st.success('La tabla se actualizó exitosamente', icon="✅")
+
+    time.sleep(1)
+
+### Función que transforma los datos crudos del Banco Central para su posterior carga en Delta Lake 
+def transforma_and_load_electricidad( ts_var : str,
+                            uploaded_file, 
+                            config : Dict[str,str], 
+                            storage_config : Dict[str,str]
+    ) -> None:
+
+
+    df = pd.read_excel(uploaded_file, sheet_name="RESUMEN FINAL", header = 1 )
+    df =df.dropna(subset=["CLASIFICACIÓN"])
+
+    df["AÑO"] = df["AÑO"].ffill()
+    df["AÑO"] = df["AÑO"].astype(str).str.replace("**","")
+
+    df["CLASIFICACIÓN"] = df["CLASIFICACIÓN"].str.replace("*","")
+    df = df.dropna(subset=["AÑO", "CLASIFICACIÓN"]).set_index(["AÑO", "CLASIFICACIÓN"]).reset_index()
+    df = df.drop(columns="TOTAL")
+    df["AÑO"] = df["AÑO"].astype(int)
+
+    df = df.query("AÑO >= 2012")
+    mapping = {
+        'ENE': '01',
+        'FEB': '02',
+        'MAR': '03',
+        'ABR': '04',
+        'MAY': '05',
+        'JUN': '06',
+        'JUL': '07',
+        'AGO': '08',
+        'SEP': '09',
+        'OCT': '10',
+        'NOV': '11',
+        'DIC': '12'
+    }
+    
+    df = df.rename(columns = mapping).melt(id_vars=["AÑO", "CLASIFICACIÓN"])
+    df["AÑO"] = df["AÑO"].astype(str)
+    df["datetime"] = df["AÑO"] + "-" +df["variable"] + "-01"
+    df = df[["datetime", "CLASIFICACIÓN", "value"]].pivot(index = "datetime", columns = "CLASIFICACIÓN", values = "value").reset_index()
+    df = df.dropna()
+
+    mapp_categorias = {
+    'AL. PÚBLICO': 'consumo_elect_al_publico',
+    'COMERCIO': 'consumo_elect_comercio',
+    'ESPECIALES': 'consumo_elect_especiales',
+    'INDUSTRIA': 'consumo_elect_industria',
+    'RESIDENCIAL': 'consumo_elect_residencial'
+    }
+
+    df = df.rename(columns = mapp_categorias)
+    df["consumo_elect_total"] = df[mapp_categorias.values()].sum(axis = 1)
+
+
+    df = pl.from_pandas(df)
+    df = df.with_columns(
+    pl.col("datetime").str.to_datetime("%Y-%m-%d")
+    )
+    
+    ### Agregamos los datos a trimestre
+    covariables = list(mapp_categorias.values()) + ["consumo_elect_total"]
+
+    datos_q = df.group_by_dynamic("datetime", every="1q", closed="left").agg(pl.sum(covariables))
+
+    ### Guardamos datos en formato Delta Table en RustFS
+
+    for covariable in covariables:
+        datos_q.select("datetime", covariable).write_delta(
+            f"s3://{config['BUCKET_NAME']}/{covariable}",
+            storage_options=storage_config,
+            mode = "overwrite"
+        )
 
     ### Mensaje de acción exitosa
     st.success('La tabla se actualizó exitosamente', icon="✅")
