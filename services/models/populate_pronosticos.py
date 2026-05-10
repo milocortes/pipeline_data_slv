@@ -14,11 +14,11 @@ with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
     storage_options = tomllib.load(f)
 
 ### Tabla que guarda los pronósticos del nivel del IVE
-columnas_nivel = ["Date", "valor_observado_nivel", "media_prediccion_nivel"]
+columnas_nivel = ["Date", "media_prediccion_nivel"]
 datos_nivel = [
-    ["2025-06-30", 131.68, 129.20], 
-    ["2025-09-30", 132.66, 132.24],
-    ["2025-12-31", 133.71, 132.93]
+    ["2025-04-01", 129.20], 
+    ["2025-07-01", 132.24],
+    ["2025-10-01", 132.93]
 ]
 
 nivel_ive = pl.DataFrame(
@@ -35,11 +35,11 @@ nivel_ive.write_delta(
 )
 
 ## Tabla que guarda los pronósticos de la tasa de crecimiento interanual del IVE
-columnas_tc_interanual = ["Date", "valor_observado_tc_interanual", "media_prediccion_tc_interanual"]
+columnas_tc_interanual = ["Date", "media_prediccion_tc_interanual"]
 datos_tc_interanual = [
-    ["2025-06-30", 0.041, 0.023], 
-    ["2025-09-30", 0.051, 0.049],
-    ["2025-12-31", 0.038, 0.032]
+    ["2025-04-01", 0.023], 
+    ["2025-07-01", 0.049],
+    ["2025-10-01", 0.032]
 ]
 
 tc_interanual = pl.DataFrame(

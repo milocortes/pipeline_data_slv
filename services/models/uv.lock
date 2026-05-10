@@ -1813,7 +1813,6 @@ dependencies = [
     { name = "ipython" },
     { name = "oauthclient" },
     { name = "polars", extra = ["all"] },
-    { name = "rich" },
     { name = "statsmodels" },
 ]
 
@@ -1823,7 +1822,6 @@ requires-dist = [
     { name = "ipython", specifier = ">=9.12.0" },
     { name = "oauthclient", specifier = ">=1.0.3" },
     { name = "polars", extras = ["all"], specifier = ">=1.39.3" },
-    { name = "rich", specifier = ">=14.3.3" },
     { name = "statsmodels", specifier = ">=0.14.6" },
 ]
 

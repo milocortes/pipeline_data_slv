@@ -6,6 +6,7 @@ import statsmodels.tsa.x13 as x13
 import statsmodels.api as sm
 from typing import List, Dict
 import numpy as np 
+import polars.selectors as cs
 
 ## Cargamos rutina de pronóstico
 from utils import train_and_forecast
@@ -17,6 +18,10 @@ from google.oauth2.service_account import Credentials
 ## Disable Warnings
 import warnings
 warnings.filterwarnings("ignore")
+
+## Carga rich
+from rich.console import Console
+console = Console()
 
 ## Carga configuración
 FP = Path(".")
@@ -30,6 +35,8 @@ with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
     storage_options = tomllib.load(f)
 
 # 1. Authenticate
+console.print("1.-", "Autenticando en GS", style="bold red")
+
 scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
 creds = Credentials.from_service_account_file('config/api_keys/pronosticos-493700-56f57502ffb3.json', scopes=scopes)
 client = gspread.authorize(creds)
@@ -42,7 +49,9 @@ sheets = [
             "pronosticos-modelos-lineales", 
             "media-pronosticos-modelos-lineales", 
             "nivel-historico-media-pronostico-modelos-lineales", 
-            "tc-interanual-historico-pronostico-modelos-lineal"
+            "tc-interanual-historico-pronostico-modelos-lineal", 
+            "valores-obs-vs-pronostico-nivel-modelos-lineales", 
+            "valores-obs-vs-pronostico-tc-anual-mod-lineales"   
         ]
 
 worksheets = {sheet : sh.worksheet(sheet) for sheet in sheets}
@@ -74,10 +83,12 @@ datos = datos.filter(
 ## Creamos una copia del dataframe
 data_set_cov = datos.clone().to_pandas().set_index("datetime")
 
+console.print("2.-", "Desestacionalizando series", style="bold red")
+
 ### Desestacionalizamos covariables
 for cov_des in covariables:
         data_set_cov[cov_des] = x13.x13_arima_analysis(
-            data_set_cov[cov_des], freq = 4, x12path= "/usr/bin/x13as"#x12path="/home/milo/Documents/egtp/iniciativas/x13as/x13as_ascii"
+            data_set_cov[cov_des], freq = 4#, x12path= "/usr/bin/x13as"#x12path="/home/milo/Documents/egtp/iniciativas/x13as/x13as_ascii"
         ).seasadj.to_numpy()
 
 data_set_cov = pl.from_pandas(data_set_cov.reset_index())
@@ -110,11 +121,16 @@ ive_nivel = datos["indice_vol_encad"].to_numpy()[-2]
 ####----------------------------------------------- ####
 
 ## Reunimos pronósticos
+
+console.print("3.-", "Entrenando y Generando pronósticos de los Modelos Lineales ARIMAX", style="bold red")
+
 predicciones_modelos = pd.concat(
                 [
                     train_and_forecast(target, exog, modelo, modelos[modelo], ive_nivel) for modelo in modelos
                 ], ignore_index=True
             )
+
+console.print("4.-", "Construyendo Tablas para GS", style="bold red")
 
 ## Agregamos valor del IVE del trimestre anterior
 predicciones_modelos["trimestre_anterior"] = datos.to_pandas()["indice_vol_encad"].iloc[-2]
@@ -235,25 +251,96 @@ tc_interanual_historico_lineales
 ####----------------------------------------------- ####
 # valores-obs-vs-pronostico-nivel-modelos-lineales
 ####----------------------------------------------- ####
-### Cargamos tabla con los valores historico y pronosticados
-
+### Cargamos tabla con los valores pronosticados del IVE en nivel
 arimax_pronostico_nivel = pl.read_delta(
         f"s3://{config['BUCKET_NAME']}/arimax_pronostico_nivel",
         storage_options=storage_options,
     )
 
+### La tabla tiene los pronósticos hasta el trimestre anterior al actualmente pronosticado
+### En primera instancia, agregaremos el pronóstico del trimestre actual a la tabla y la actualizaremos en 
+### Delta Lake alojado en RustFS
+arimax_pronostico_nivel = pl.concat(
+    [
+        arimax_pronostico_nivel, 
+        predicciones_medias.select("Date", "prediccion_nivel").rename({"prediccion_nivel" : "media_prediccion_nivel"})
+    ]
+).unique(
+    keep='last' ### En caso de valor duplicado, nos quedamos con el último valor observado
+).sort(
+    by = "Date"
+)
+
+### Actualizamos tabla
+arimax_pronostico_nivel.write_delta(
+    f"s3://{config['BUCKET_NAME']}/arimax_pronostico_nivel",
+    storage_options=storage_options,
+    mode = "overwrite"
+)
+
+### Obtenemos el valor observado del IVE en nivel para el periodo que disponemos de pronósticos
+### Para construir la tabla valores-obs-vs-pronostico-nivel-modelos-lineales
+
+obs_vs_pronostico_nivel_arimax = arimax_pronostico_nivel.join(
+    ive.rename(
+        {
+            "datetime" : "Date", 
+            "indice_vol_encad" : "valor_observado_nivel"
+        }), 
+    on = "Date", 
+    how = "left"
+).select(
+    "Date", "valor_observado_nivel", "media_prediccion_nivel"
+).with_columns(
+    cs.float().round(3) # Redondeamos a tres digitos
+)
+
+
 
 ####----------------------------------------------- ####
 # valores-obs-vs-pronostico-tc-anual-mod-lineales
 ####----------------------------------------------- ####
-### Cargamos tabla con los valores historico y pronosticados
-
+### Cargamos tabla con los valores pronosticados de la tasa de crecimiento interanual del IVE
 arimax_pronostico_tc_interanual = pl.read_delta(
         f"s3://{config['BUCKET_NAME']}/arimax_pronostico_tc_interanual",
         storage_options=storage_options,
     )
 
+### La tabla tiene los pronósticos del crecimiento interanual hasta el trimestre anterior al actualmente pronosticado
+### En primera instancia, agregaremos el pronóstico del crecimiento interanual trimestre actual a la tabla y la actualizaremos en 
+### Delta Lake alojado en RustFS
+arimax_pronostico_tc_interanual = pl.concat(
+    [
+        arimax_pronostico_tc_interanual, 
+        predicciones_medias.select("Date", "prediccion_tc_interanual").rename({"prediccion_tc_interanual" : "media_prediccion_tc_interanual"})
+    ]
+).unique(
+    keep='last' ### En caso de valor duplicado, nos quedamos con el último valor observado
+).sort(
+    by = "Date"
+)
 
+### Actualizamos tabla
+arimax_pronostico_tc_interanual.write_delta(
+    f"s3://{config['BUCKET_NAME']}/arimax_pronostico_tc_interanual",
+    storage_options=storage_options,
+    mode = "overwrite"
+)
+
+### Obtenemos el valor observado del crecimiento interanual del IVE para el periodo que disponemos de pronósticos
+### Para construir la tabla valores-obs-vs-pronostico-tc-anual-mod-lineales
+obs_vs_pronostico_tc_anual_arimax = arimax_pronostico_tc_interanual.join(
+    ive_interanual.rename(
+        {
+            "indice_vol_encad" : "valor_observado_tc_interanual"
+        }), 
+    on = "Date", 
+    how = "left"
+).select(
+    "Date", "valor_observado_tc_interanual", "media_prediccion_tc_interanual"
+).with_columns(
+    cs.float().round(3) # Redondeamos a tres digitos
+)
 
 
 #### Guardamos dataframes de salida en un diccionario
@@ -283,10 +370,14 @@ outputs_tables = {
     "pronosticos-modelos-lineales" : ajusta_df(predicciones_modelos), 
     "media-pronosticos-modelos-lineales" : ajusta_df(predicciones_medias), 
     "nivel-historico-media-pronostico-modelos-lineales" : ajusta_df(nivel_historico_media_lineales), 
-    "tc-interanual-historico-pronostico-modelos-lineal" : ajusta_df(tc_interanual_historico_lineales)
+    "tc-interanual-historico-pronostico-modelos-lineal" : ajusta_df(tc_interanual_historico_lineales), 
+    "valores-obs-vs-pronostico-nivel-modelos-lineales" : ajusta_df(obs_vs_pronostico_nivel_arimax), 
+    "valores-obs-vs-pronostico-tc-anual-mod-lineales" : ajusta_df(obs_vs_pronostico_tc_anual_arimax)
 }
 
 #### Exportamos tablas a GS
+console.print("5.-", "Exportamos Tablas a GS", style="bold red")
+
 for sheet_name, worksheet in worksheets.items():
     # Upload data (headers + values)
     worksheet.update(
