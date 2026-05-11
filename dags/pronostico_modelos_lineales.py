@@ -10,8 +10,10 @@ with DAG(
     dag_id="forecast_modelos_lineales",
     description="Pronóstico de Modelos Lineales usando Docker.",
     start_date=datetime(2023, 1, 1),
-    end_date=datetime(2023, 1, 3),
-    schedule=CronDataIntervalTimetable("@monthly", "UTC"),
+    end_date=datetime(2030, 1, 3),
+    max_active_tasks=1,  # Limits this DAG to 1 parallel tasks
+    max_active_runs=1,    # Limits to 1 active run at a time
+    #schedule=CronDataIntervalTimetable("@monthly", "UTC"),
     catchup=True,
 ):
     forecast_arimax = DockerOperator(
