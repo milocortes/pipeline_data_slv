@@ -5,6 +5,8 @@ import polars as pl
 from typing import List, Dict
 import numpy as np 
 
+from deltalake import DeltaTable
+
 ## Carga configuración
 FP = Path(".")
 
@@ -40,13 +42,29 @@ def available_cov_arimax(
     respuesta = "indice_vol_encad"
 
     ## Consolidamos tablas
-    datos = pl.concat([
-        pl.read_delta(
-            f"s3://{config['BUCKET_NAME']}/{cov}",
-            storage_options=storage_options,
-        )
-        for cov in covariables + [respuesta]
-    ],  how = "align")
+    ### Primero verificaremos si existen las tablas en Delta Lake.
+    ### Si existen, cargamos las tablas. En caso contrario, guardamos la tabla que 
+    ### no existe en `no_existen_tablas`
+
+    no_existen_tablas = []
+    datos = []
+
+    for cov in covariables + [respuesta]:
+        test_table = DeltaTable.is_deltatable(f"s3://{config['BUCKET_NAME']}/{cov}", storage_options)
+
+        if test_table:
+            datos.append(
+                pl.read_delta(
+                    f"s3://{config['BUCKET_NAME']}/{cov}",
+                    storage_options=storage_options,
+                )
+            )
+        else:
+            no_existen_tablas.append(
+                cov
+            )
+
+    datos = pl.concat(datos,  how = "align")
 
     # Filtramos los valores para el trimestre posterior al último valor disponible del IVE
     datos = datos.filter(
@@ -56,10 +74,14 @@ def available_cov_arimax(
     )   
 
     # Obtenemos un diccionario con el último valor disponible de las covariables
-    last_q_datos = datos.select(covariables).tail(1).to_dicts()[0]
+    covariables_tablas_existentes = list(set(covariables) - set(no_existen_tablas))
+    last_q_datos = datos.select(covariables_tablas_existentes).tail(1).to_dicts()[0]
 
-    # Lista con las covariables que no se encuentran disponibles para la estimación
+    # Lista con las covariables que no se encuentran disponibles para la fecha de la estimación
     datos_no_disponibles = [i for i,j in last_q_datos.items() if not j]
+
+    # Agregamos las variables para las cuales no existen tablas
+    datos_no_disponibles += no_existen_tablas
 
     # Cambia nomenclatura de variable por su nombre completo
     datos_no_disponibles = [metadata_admin[cov]["variable"] if cov in metadata_admin else cov for cov in datos_no_disponibles ]
