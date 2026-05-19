@@ -51,8 +51,6 @@ datos = gdp.join(
     electricidad, on = ["datetime", "GID_1"]
 ).join(
     viirs, on = ["datetime", "GID_1"]
-).with_columns(
-    pl.col("datetime").str.to_datetime("%Y-%m-%d")
 )
 
 last_quarter = datos.select(pl.col("datetime").max()).item()

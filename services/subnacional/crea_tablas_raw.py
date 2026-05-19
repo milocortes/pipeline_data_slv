@@ -58,10 +58,14 @@ for cov in covariables:
 covariables += ["poblacion_departamento"]
 
 for cov in covariables:
-    data_cov = pl.read_csv(f"datos/{cov}.csv")
+    data_cov = pl.read_csv(
+                    f"datos/{cov}.csv"
+                ).with_columns(
+                    pl.col("datetime").str.to_datetime("%Y-%m-%d")
+                )
     data_cov.write_delta(
     f"s3://{config['BUCKET_NAME']}/{cov}",
     storage_options=storage_options,
     mode = "overwrite"
-)
+    )
 
