@@ -343,3 +343,99 @@ def transforma_and_load_electricidad( ts_var : str,
     st.success('La tabla se actualizó exitosamente', icon="✅")
 
     time.sleep(1)
+
+#############################################
+### ------------ SUBNACIONAL -------------- #
+#############################################
+
+departamento_to_gid = {'Ahuachapán': 'SLV_1',
+ 'Cabañas': 'SLV_2',
+ 'Chalatenango': 'SLV_3',
+ 'Cuscatlán': 'SLV_4',
+ 'La Libertad': 'SLV_5',
+ 'La Paz': 'SLV_6',
+ 'La Unión': 'SLV_7',
+ 'Morazán': 'SLV_8',
+ 'San Miguel': 'SLV_9',
+ 'San Salvador': 'SLV_10',
+ 'San Vicente': 'SLV_11',
+ 'Santa Ana': 'SLV_12',
+ 'Sonsonate': 'SLV_13',
+ 'Usulután': 'SLV_14'}
+
+departamentos_lista = list(departamento_to_gid.keys())
+
+## Función que crea la gráfica de serie de tiempo y tiene boton de carga de archivo para el componente subnacional
+def time_series_plot_subnacional(ts_var : str, 
+                     metadata : Dict[str, str], 
+                     config : Dict[str,str], 
+                     storage_config : Dict[str,str]
+    ) -> None:
+    
+    st.title(metadata["descripcion"])
+
+    ## Cargamos los datos de Delta Lake al llamar a la función
+    data = load_delta_table(ts_var, config, storage_config)
+
+    if not data.is_empty():
+
+        option = st.selectbox(
+            "Selecciona el Departamento",
+            departamentos_lista,
+            index=0,
+            placeholder="Departamento",
+        )
+
+        st.markdown(f"## Departamento {option}" )
+
+        data_depto = data.filter(
+            (pl.col("GID_1") == departamento_to_gid[option]) &
+            (pl.col("datetime") >= pl.datetime(2012,1,1))
+        ).drop("GID_1")
+        data2plot = data_depto.with_columns(
+            pl.col(ts_var).round(3),
+            pl.col("datetime").dt.year().cast(pl.Utf8) + "Q" + pl.col("datetime").dt.quarter().cast(pl.Utf8) # Ajustamos el trimestre
+            ).to_numpy()
+
+        print(data2plot)
+        linea = (
+            Line()
+            .add_xaxis(xaxis_data=[item[0] for item in data2plot])
+            .add_yaxis(
+                series_name="",
+                y_axis=[item[1] for item in data2plot],
+                yaxis_index=0,
+                #is_smooth=True,
+                is_symbol_show=False,
+            )
+            .set_global_opts(
+                title_opts=opts.TitleOpts(title=metadata["variable"]),
+                tooltip_opts=opts.TooltipOpts(trigger="axis"),
+
+                yaxis_opts=opts.AxisOpts(
+                    type_="value",
+                    name_location="start",
+                    min_=round(data_depto.select(ts_var).min().item(), 2),
+                    max_=round(data_depto.select(ts_var).max().item(), 2) ,
+                    is_scale=True,
+                    axistick_opts=opts.AxisTickOpts(is_inside=False),
+                ),
+            )
+        )
+
+        
+        st_pyecharts(linea)
+    else:
+        st.warning('La Tabla no está disponible', icon="⚠️")
+
+    st.markdown(
+        f"""
+        * **Frecuencia** : {metadata['frecuencia_actualizacion']} 
+        * **Frecuencia de Actualización** : {metadata['frecuencia_actualizacion_delta']}
+        * **Rezago** : {metadata['rezago_fecha_actual']}
+        * **Fuente** : {metadata['fuente']}
+        """
+    )
+
+    if ts_var in ["electricidad_departamento", "gdp_us_corriente"]:
+        st.warning('Aquí se agregará método para cargar la tabla', icon="⚠️")

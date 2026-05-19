@@ -1,0 +1,39 @@
+[gdp_ppp_departamento]
+variable = "Gross Domestic Product (GDP) per capita at purchasing power parity (PPP)."
+descripcion = "Data for: Downscaled gridded global dataset for Gross Domestic Product (GDP) per capita at purchasing power parity (PPP) over 1990-2022 (updated to 1990-2024)"
+fuente = "https://doi.org/10.5281/zenodo.10976733"
+frecuencia_actualizacion = ""
+frecuencia_actualizacion_delta = "Indefinido"
+rezago_fecha_actual = ""
+
+[electricidad_departamento]
+variable = "Consumo electrico trimestral agregado a comercios en kWh para El Salvador."
+descripcion = "Consumo electrico trimestral agregado a comercios en kWh para El Salvador."
+fuente = "Superintendencia General de Electricidad y Telecomunicaciones (SIGET)"
+frecuencia_actualizacion = "Mensual"
+frecuencia_actualizacion_delta = "Indefinido"
+rezago_fecha_actual = ""
+
+[viirs_bm_sum_departamento]
+variable = "VIIRS Black Marble"
+descripcion = "Luces Nocturnas VIIRS Black Marble"
+fuente = "https://viirsland-gsfc-nasa-gov.translate.goog/Products/NASA/BlackMarble.html?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc"
+frecuencia_actualizacion = "Mensual"
+frecuencia_actualizacion_delta = "Mensualmente"
+rezago_fecha_actual = "Rezago de 1-4 meses respecto a la fecha actual. "
+
+[poblacion_departamento]
+variable = "Population Counts"
+descripcion = "WorldPop produces different types of gridded population count datasets."
+fuente = "https://hub.worldpop.org/project/categories?id=3 "
+frecuencia_actualizacion = "Anual"
+frecuencia_actualizacion_delta = "Anual"
+rezago_fecha_actual = ""
+
+[gdp_us_corriente]
+variable = "Producto Interno Bruto Trimestral (PIB T). Producción y gasto a precios corrientes."
+descripcion = "Producto Interno Bruto Trimestral (PIB T). Producción y gasto a precios corrientes. Millones de US$"
+fuente = "https://estadisticas.bcr.gob.sv/serie/producto-interno-bruto-trimestral-pib-t-produccion-y-gasto-a-precios-corrientes-en-millones-de-us"
+frecuencia_actualizacion = "Trimestral"
+frecuencia_actualizacion_delta = "Trimestral"
+rezago_fecha_actual = ""
