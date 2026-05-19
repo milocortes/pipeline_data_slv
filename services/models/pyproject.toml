@@ -10,5 +10,6 @@ dependencies = [
     "oauthclient>=1.0.3",
     "polars[all]>=1.39.3",
     "rich>=14.3.3",
+    "shap>=0.51.0",
     "statsmodels>=0.14.6",
 ]

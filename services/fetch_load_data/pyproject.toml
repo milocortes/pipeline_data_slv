@@ -5,10 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "blackmarblepy>=2025.11.2",
+    "blackmarblepy",
     "earthengine-api>=1.7.19",
     "fredapi>=0.5.2",
     "geopandas>=1.1.3",
     "ipython>=9.12.0",
     "polars[all]>=1.39.3",
 ]
+
+[tool.uv.sources]
+blackmarblepy = { path = "blackmarblepy_dist/blackmarblepy-2025.11.3.dev1+gc53615384.d20260516-py3-none-any.whl" }
