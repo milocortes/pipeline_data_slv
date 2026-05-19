@@ -397,7 +397,6 @@ def time_series_plot_subnacional(ts_var : str,
             pl.col("datetime").dt.year().cast(pl.Utf8) + "Q" + pl.col("datetime").dt.quarter().cast(pl.Utf8) # Ajustamos el trimestre
             ).to_numpy()
 
-        print(data2plot)
         linea = (
             Line()
             .add_xaxis(xaxis_data=[item[0] for item in data2plot])
