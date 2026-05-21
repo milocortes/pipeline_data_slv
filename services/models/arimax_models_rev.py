@@ -9,7 +9,7 @@ import numpy as np
 import polars.selectors as cs
 
 ## Cargamos rutina de pronóstico
-from utils import train_and_forecast
+from utils import train_and_forecast, get_SHAP
 
 ## GS packages
 import gspread
@@ -51,7 +51,8 @@ sheets = [
             "nivel-historico-media-pronostico-modelos-lineales", 
             "tc-interanual-historico-pronostico-modelos-lineal", 
             "valores-obs-vs-pronostico-nivel-modelos-lineales", 
-            "valores-obs-vs-pronostico-tc-anual-mod-lineales"   
+            "valores-obs-vs-pronostico-tc-anual-mod-lineales", 
+            "info-tabla-contribucion-variables-modelos-lineales"   
         ]
 
 worksheets = {sheet : sh.worksheet(sheet) for sheet in sheets}
@@ -343,6 +344,15 @@ obs_vs_pronostico_tc_anual_arimax = arimax_pronostico_tc_interanual.join(
 )
 
 
+####----------------------------------------------- ####
+# info-tabla-contribucion-variables-modelos-lineales
+####----------------------------------------------- ####
+contribucion_covariables_modelos = pd.concat(
+                [
+                    get_SHAP(target, exog, modelo, modelos[modelo]) for modelo in modelos
+                ], ignore_index=True
+            )
+
 #### Guardamos dataframes de salida en un diccionario
 def ajusta_df(
     datos : pl.DataFrame
@@ -372,7 +382,8 @@ outputs_tables = {
     "nivel-historico-media-pronostico-modelos-lineales" : ajusta_df(nivel_historico_media_lineales), 
     "tc-interanual-historico-pronostico-modelos-lineal" : ajusta_df(tc_interanual_historico_lineales), 
     "valores-obs-vs-pronostico-nivel-modelos-lineales" : ajusta_df(obs_vs_pronostico_nivel_arimax), 
-    "valores-obs-vs-pronostico-tc-anual-mod-lineales" : ajusta_df(obs_vs_pronostico_tc_anual_arimax)
+    "valores-obs-vs-pronostico-tc-anual-mod-lineales" : ajusta_df(obs_vs_pronostico_tc_anual_arimax), 
+    "info-tabla-contribucion-variables-modelos-lineales" : contribucion_covariables_modelos
 }
 
 #### Exportamos tablas a GS
