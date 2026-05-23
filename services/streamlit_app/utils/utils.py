@@ -18,6 +18,7 @@ BR_VAR_NAME : Dict[str,str]= {
     "remesas_usd_trim" : "Ingresos mensuales de remesas familiares",
     "export_usd_fob" : "Exportaciones",
     "import_usd_cif" : "Importaciones",
+    "gdp_us_corriente" : "Producto Interno Bruto trimestral por el enfoque de la producción"
 }
 
 ## Funcion que carga las tablas del almacenamiento de objetos
@@ -162,7 +163,7 @@ def time_series_plot(ts_var : str,
         """
     )
 
-    if ts_var in ["consumo_elect_total", "export_usd_fob", "import_usd_cif", "indice_vol_encad", "remesas_usd_trim"]:
+    if ts_var in ["consumo_elect_total", "export_usd_fob", "import_usd_cif", "indice_vol_encad", "remesas_usd_trim", "gdp_us_corriente"]:
         
         if "upload_key" not in st.session_state:
             st.session_state["upload_key"] = 0
@@ -217,7 +218,7 @@ def transforma_and_load_bc( ts_var : str,
     )
 
     ## Modificamos los valores de meses para el IVE
-    if ts_var == "indice_vol_encad":
+    if ts_var in ["indice_vol_encad", "gdp_us_corriente"] :
         raw_data = raw_data.with_columns(
             pl.col("field_1").str.replace_many(
                 {
