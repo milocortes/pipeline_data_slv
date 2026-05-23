@@ -29,6 +29,7 @@ RUN Rscript R_config.R
 COPY ./crea_pdata_bpvar.py /crea_pdata_bpvar.py 
 COPY ./bpvars.R /bpvars.R
 COPY ./envia_delta_lake.py /envia_delta_lake.py
+COPY ./envia_gs.py /envia_gs.py
 
 ## Ejecuta tarea
 COPY ./run_subnacional.sh /run_subnacional.sh

@@ -12,3 +12,6 @@ Rscript bpvars.R
 echo "Manda datos a Delta Lake"
 uv run envia_delta_lake.py
 
+## Manda datos a Google Sheets
+echo "Manda datos a Google Sheets"
+uv run envia_gs.py
