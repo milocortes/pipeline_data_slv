@@ -353,6 +353,8 @@ contribucion_covariables_modelos = pd.concat(
                 ], ignore_index=True
             )
 
+contribucion_covariables_modelos["Contribución"] = contribucion_covariables_modelos["Contribución"].round(2)
+
 #### Guardamos dataframes de salida en un diccionario
 def ajusta_df(
     datos : pl.DataFrame
