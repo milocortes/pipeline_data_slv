@@ -10,6 +10,7 @@ RUN chmod +x /usr/bin/x13as
 RUN apt update
 RUN apt install -y libgfortran5
 COPY ./arimax_models_rev.py /arimax_models_rev.py
+COPY ./ml_models.py /ml_models.py
 RUN uv sync 
-ENTRYPOINT ["uv", "run", "arimax_models_rev.py"]
+#ENTRYPOINT ["uv", "run", "arimax_models_rev.py"]
 #ENTRYPOINT ["/usr/bin/x13as"]

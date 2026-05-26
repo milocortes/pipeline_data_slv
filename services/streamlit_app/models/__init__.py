@@ -1,1 +1,1 @@
-from .models import get_available_cov_arimax
+from .models import get_available_cov_arimax, get_available_cov_ml
