@@ -1873,6 +1873,7 @@ dependencies = [
     { name = "rich" },
     { name = "shap" },
     { name = "statsmodels" },
+    { name = "xgboost-cpu" },
 ]
 
 [package.metadata]
@@ -1884,6 +1885,7 @@ requires-dist = [
     { name = "rich", specifier = ">=14.3.3" },
     { name = "shap", specifier = ">=0.51.0" },
     { name = "statsmodels", specifier = ">=0.14.6" },
+    { name = "xgboost-cpu", specifier = "==3.0.0" },
 ]
 
 [[package]]
@@ -3892,6 +3894,24 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0f/03/e3353b72e518574b32993989d8f696277bf878e9d508c7dd22e86c0dab5b/xarray-2026.2.0.tar.gz", hash = "sha256:978b6acb018770554f8fd964af4eb02f9bcc165d4085dbb7326190d92aa74bcf", size = 3111388, upload-time = "2026-02-13T22:20:50.18Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/99/92/545eb2ca17fc0e05456728d7e4378bfee48d66433ae3b7e71948e46826fb/xarray-2026.2.0-py3-none-any.whl", hash = "sha256:e927d7d716ea71dea78a13417970850a640447d8dd2ceeb65c5687f6373837c9", size = 1405358, upload-time = "2026-02-13T22:20:47.847Z" },
+]
+
+[[package]]
+name = "xgboost-cpu"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'darwin'" },
+    { name = "numpy", version = "2.4.4", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine != 'x86_64' or sys_platform != 'darwin'" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fe/7a/9388d63ce062731d179ef4242c069eedbb4ef99e1ef55b7e707756f9863d/xgboost_cpu-3.0.0.tar.gz", hash = "sha256:33614ea793447bf68b19214fca0eb11bac9158474a6e2b0a343dc4435c38d9e3", size = 1156946, upload-time = "2025-03-15T13:54:11.898Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/4c/b9b9cb522e5b6defa158c361c02ba9b36d375bc0ba4b0fad58619e72541f/xgboost_cpu-3.0.0-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1041c8594ebc3ee4cde6871d2fcd8eaa5c7a8b399de7caf5ae91749d5889d7c3", size = 4841285, upload-time = "2025-03-15T13:55:11.717Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/7c/0c861cba6b662a30371b2647d08bbf71e0a3311c21402114d708eeed94bc/xgboost_cpu-3.0.0-py3-none-manylinux2014_x86_64.whl", hash = "sha256:1fd557fb2d2d71397f286fb1f7dd591289cf837a8ea2d2f5ce7bac1249bb947b", size = 4903728, upload-time = "2025-03-15T13:55:40.328Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/5b/0ec9e50b56f604bdac1c686224a32978a90ec34a599b202db8b5d10de3a4/xgboost_cpu-3.0.0-py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:708af2e7d644e122a93994a583a79802c7e092121091de8d674ba670c551fc68", size = 4602929, upload-time = "2025-04-15T22:50:03.634Z" },
+    { url = "https://files.pythonhosted.org/packages/71/14/0a87b712ef72c42a4f1a7cb52d93e5aedc4899a150a5bcb9df081a1fb6e9/xgboost_cpu-3.0.0-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:54f80f521ad73f5b861d840ab8ddd8ea4855d582081646dbf8d7ed7fa89bc132", size = 4954069, upload-time = "2025-04-15T22:50:06.074Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/96/f4b55e43fc46e23608fb2723c546c6a2a6c123402649b99e05a3a813586b/xgboost_cpu-3.0.0-py3-none-win_amd64.whl", hash = "sha256:7b2553a922d0765c6b80105a0d6fc67f053e668ce5bba549abe789c67479feb2", size = 1925577, upload-time = "2025-03-15T13:55:57.649Z" },
 ]
 
 [[package]]
