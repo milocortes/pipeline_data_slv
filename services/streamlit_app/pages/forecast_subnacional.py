@@ -8,14 +8,14 @@ from datetime import datetime
 ## Rutina para evaluar si se tienen todas las covariables disponibles
 from models import get_available_cov_ml
 
-st.title("Pronostico Modelos de Aprendizaje de Máquina")
+st.title("Estimación PIB Subnacional con Modelo Panel Dinámico Bayesiano")
 
 test_disponibilidad = get_available_cov_ml()
 
 # 1. Define your Markdown template with Jinja2 placeholders
 template_disponibilidad = """
 
-:red-badge[⚠️ El pronóstico del IVE para el trimestre **NO** puede realizarse].
+:red-badge[⚠️ La estimación del PIB Subnacional **NO** puede realizarse].
 
 **No se encuentra disponible el dato del trimestre a pronosticar para las siguientes variables**:
 
@@ -34,10 +34,10 @@ if test_disponibilidad:
     st.markdown(rendered_markdown)
 
 else:
-    if st.button("Pronóstico IVE Modelos de Aprendizaje de Máquina"):
+    if st.button("Estimación PIB Subnacional"):
 
         ## Esta información debe ir en un archivo de configuración. Por el momento quedará hardcodeado
-        url = "http://localhost:8080/api/v2/dags/forecast_modelos_ml/dagRuns"
+        url = "http://localhost:8080/api/v2/dags/estimacion_subnacional/dagRuns"
         url_token = "http://localhost:8080/auth/token"
 
         headers_token = {

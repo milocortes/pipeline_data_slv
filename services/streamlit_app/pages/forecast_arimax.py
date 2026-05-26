@@ -8,23 +8,6 @@ from datetime import datetime
 ## Rutina para evaluar si se tienen todas las covariables disponibles
 from models import get_available_cov_arimax
 
-## Esta información debe ir en un archivo de configuración. Por el momento quedará hardcodeado
-url = "http://localhost:8080/api/v2/dags/forecast_modelos_lineales/dagRuns"
-url_token = "http://localhost:8080/auth/token"
-
-headers_token = {
-    "Content-Type" : "application/json"
-}
-
-data_token = {
-    "username": "airflow",
-    "password": "airflow"
-}
-
-response_token = requests.post(url_token, headers=headers_token, json=data_token)
-
-token = response_token.json()["access_token"]
-
 st.title("Pronostico Modelos Lineales ARIMAX")
 
 test_disponibilidad = get_available_cov_arimax()
@@ -52,6 +35,23 @@ if test_disponibilidad:
 
 else:
     if st.button("Pronóstico IVE ARIMAX"):
+
+        ## Esta información debe ir en un archivo de configuración. Por el momento quedará hardcodeado
+        url = "http://localhost:8080/api/v2/dags/forecast_modelos_lineales/dagRuns"
+        url_token = "http://localhost:8080/auth/token"
+
+        headers_token = {
+            "Content-Type" : "application/json"
+        }
+
+        data_token = {
+            "username": "airflow",
+            "password": "airflow"
+        }
+
+        response_token = requests.post(url_token, headers=headers_token, json=data_token)
+
+        token = response_token.json()["access_token"]
 
         with st.spinner("Wait for it...", show_time=True):
             headers = {

@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Streamlit ECharts Demo",
+    page_title="Administración Backend",
     page_icon=":chart_with_upwards_trend:",
     layout="wide",
 )
@@ -17,8 +17,10 @@ pg = st.navigation(
         st.Page("pages/covariables.py", title="Covariables", icon=":material/code:"),
         st.Page("pages/forecast_arimax.py", title = "Pronóstico Modelos Lineales", icon = "🚀"), 
         st.Page("pages/forecast_ml.py", title = "Pronóstico Modelos Aprendizaje de Máquina", icon = "📊"), 
-        st.Page("pages/actualiza_tokens.py", title = "Actualización de Tokens", icon = "🚨"),
         st.Page("pages/subnacional_covariables.py", title="Covariables Subnacional", icon=":material/code:"),
+        st.Page("pages/forecast_subnacional.py", title="Estimación Subnacional", icon="🌍"),
+        st.Page("pages/actualiza_tokens.py", title = "Actualización de Tokens", icon = "🔑"),
+
     ]
 )
 pg.run()
