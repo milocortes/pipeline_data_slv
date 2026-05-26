@@ -42,7 +42,7 @@ creds = Credentials.from_service_account_file('config/api_keys/pronosticos-49370
 client = gspread.authorize(creds)
 
 # 3. Open Google Sheet and update
-sh = client.open("test_pronostico")
+sh = client.open("insumos-tablero-pib")
 
 # Diccionario de tabs de Google Sheet
 sheets = [
@@ -360,10 +360,13 @@ def ajusta_df(
     datos : pl.DataFrame
     ) -> pd.DataFrame:
     return datos.with_columns(
+        ## Ajustamos fecha del trimestre para que indique el último día del trimestre
         pl.col("Date")
             .dt.truncate("1q")
             .dt.offset_by("2mo")
-            .dt.month_end().dt.strftime("%Y-%m-%d")
+            .dt.month_end().dt.strftime("%Y-%m-%d"),
+        ## Redondeamos a 3 dígitos los valores numéricos
+         cs.float().round(3)
         ).to_pandas().replace(np.nan, "")
 
 ##### Ajustamos nombres de columnas de la tabla de predicciones_medias
