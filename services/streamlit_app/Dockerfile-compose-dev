@@ -5,6 +5,7 @@ COPY ./services/streamlit_app/cov_administrativas /cov_administrativas
 COPY ./services/streamlit_app/cov_geoespaciales /cov_geoespaciales
 COPY ./services/streamlit_app/cov_subnacional /cov_subnacional
 COPY ./services/streamlit_app/metadata /metadata
+COPY ./services/streamlit_app/models /models
 COPY ./services/streamlit_app/pages /pages
 COPY ./services/streamlit_app/utils /utils
 
