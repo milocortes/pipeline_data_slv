@@ -11,6 +11,9 @@ import polars.selectors as cs
 ## Cargamos rutina de pronóstico
 from utils import train_and_forecast, get_SHAP
 
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
+
 ## GS packages
 import gspread
 from google.oauth2.service_account import Credentials
@@ -24,15 +27,11 @@ from rich.console import Console
 console = Console()
 
 ## Carga configuración
-FP = Path(".")
-
 ## Carga configuración general
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 # 1. Authenticate
 console.print("1.-", "Autenticando en GS", style="bold red")
