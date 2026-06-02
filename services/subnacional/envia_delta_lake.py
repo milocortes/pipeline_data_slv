@@ -4,15 +4,14 @@ from pathlib import Path
 import polars as pl
 from deltalake import DeltaTable
 
-## Carga configuración
-FP = Path(".")
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
 
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+## Carga configuración general
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 ## Carga salidas del modelo BPVAR
 datos = pl.read_csv(

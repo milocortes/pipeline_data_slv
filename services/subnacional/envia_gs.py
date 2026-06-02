@@ -17,16 +17,14 @@ warnings.filterwarnings("ignore")
 from rich.console import Console
 console = Console()
 
-## Carga configuración
-FP = Path(".")
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
 
 ## Carga configuración general
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 # 1. Authenticate
 console.print("1.-", "Autenticando en GS", style="bold red")

@@ -30,6 +30,22 @@ COPY ./crea_pdata_bpvar.py /crea_pdata_bpvar.py
 COPY ./bpvars.R /bpvars.R
 COPY ./envia_delta_lake.py /envia_delta_lake.py
 COPY ./envia_gs.py /envia_gs.py
+COPY ./utils /utils 
+
+# Set environment variables
+# General environment variables
+ENV start_date="2012-01-01"
+ENV LSIB="FAO/GAUL/2015/level0"
+ENV BUCKET_NAME="pronostico"
+ENV service_account_gee="geoespacial@pib-geoespacial.iam.gserviceaccount.com"
+ENV gee_project="pib-geoespacial"
+
+# Storage environment variables
+ENV AWS_ENDPOINT_URL='http://127.0.0.1:9000'
+ENV AWS_REGION="us-east-1"
+ENV AWS_ACCESS_KEY_ID="rustfsadmin"
+ENV AWS_SECRET_ACCESS_KEY="rustfsadmin"
+ENV allow_http='true' 
 
 ## Ejecuta tarea
 COPY ./run_subnacional.sh /run_subnacional.sh

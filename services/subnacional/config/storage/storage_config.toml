@@ -1,5 +1,0 @@
-AWS_ENDPOINT_URL = 'http://127.0.0.1:9000'  # RustFS server URL
-AWS_REGION = "us-east-1"
-AWS_ACCESS_KEY_ID = "rustfsadmin"
-AWS_SECRET_ACCESS_KEY = "rustfsadmin"
-allow_http = 'true' # Required for non-HTTPS endpoints

@@ -3,16 +3,14 @@ import tomllib
 from pathlib import Path
 import polars as pl
 
-## Carga configuración
-FP = Path(".")
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
 
 ## Carga configuración general
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 ## Definimos covariables
 covariables = ["gdp_ppp_departamento", "electricidad_departamento", "viirs_bm_sum_departamento", "poblacion_departamento"]
