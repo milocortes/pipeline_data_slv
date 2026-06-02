@@ -1,5 +1,6 @@
 import streamlit as st
 from jinja2 import Template
+import os 
 
 ## Paquetes para desencadenar la DAG con Airflow REST API
 import requests
@@ -7,6 +8,12 @@ from datetime import datetime
 
 ## Rutina para evaluar si se tienen todas las covariables disponibles
 from models import get_available_cov_ml
+
+## Carga variables de entorno 
+AIRFLOW_APISERVER_DOMAIN = os.getenv("AIRFLOW_APISERVER_DOMAIN")
+AIRFLOW_APISERVER_PORT = os.getenv("AIRFLOW_APISERVER_PORT")
+_AIRFLOW_WWW_USER_PASSWORD = os.getenv("_AIRFLOW_WWW_USER_PASSWORD")
+_AIRFLOW_WWW_USER_USERNAME = os.getenv("_AIRFLOW_WWW_USER_USERNAME")
 
 st.title("Estimación PIB Subnacional con Modelo Panel Dinámico Bayesiano")
 
@@ -37,16 +44,16 @@ else:
     if st.button("Estimación PIB Subnacional"):
 
         ## Esta información debe ir en un archivo de configuración. Por el momento quedará hardcodeado
-        url = "http://localhost:8080/api/v2/dags/estimacion_subnacional/dagRuns"
-        url_token = "http://localhost:8080/auth/token"
+        url = f"{AIRFLOW_APISERVER_DOMAIN}:{AIRFLOW_APISERVER_PORT}/api/v2/dags/estimacion_subnacional/dagRuns"
+        url_token = f"{AIRFLOW_APISERVER_DOMAIN}:{AIRFLOW_APISERVER_PORT}/auth/token"
 
         headers_token = {
             "Content-Type" : "application/json"
         }
 
         data_token = {
-            "username": "airflow",
-            "password": "airflow"
+            "username": _AIRFLOW_WWW_USER_USERNAME,
+            "password": _AIRFLOW_WWW_USER_PASSWORD
         }
 
         response_token = requests.post(url_token, headers=headers_token, json=data_token)

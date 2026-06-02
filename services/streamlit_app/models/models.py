@@ -7,16 +7,17 @@ import numpy as np
 
 from deltalake import DeltaTable
 
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
+
 ## Carga configuración
 FP = Path(".")
 
 ## Carga configuración general
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 ## Carga Metadatos de Variables administrativas
 with open(FP/"metadata"/"admin"/"metadata_admin.toml", "rb") as f:
