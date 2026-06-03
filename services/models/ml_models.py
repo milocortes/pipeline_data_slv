@@ -5,7 +5,10 @@ import pandas as pd
 import numpy as np 
 import statsmodels.tsa.x13 as x13
 import polars.selectors as cs
+import os
 
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
 
 ## Importamos funciones para el cálculo de los errores
 from sklearn.metrics import mean_squared_error, mean_absolute_error, root_mean_squared_error
@@ -40,16 +43,11 @@ warnings.filterwarnings("ignore")
 from rich.console import Console
 console = Console()
 
-## Carga configuración
-FP = Path(".")
-
 ## Carga configuración general
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 # 1. Authenticate
 console.print("1.-", "Autenticando en GS", style="bold red")
@@ -59,7 +57,8 @@ creds = Credentials.from_service_account_file('config/api_keys/pronosticos-49370
 client = gspread.authorize(creds)
 
 # 3. Open Google Sheet and update
-sh = client.open("insumos-tablero-pib")
+SPREADSHEET = os.getenv("GS_SPREADSHEET")
+sh = client.open(SPREADSHEET)
 
 # Diccionario de tabs de Google Sheet
 sheets = [

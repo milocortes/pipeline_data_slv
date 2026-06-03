@@ -7,6 +7,7 @@ import statsmodels.api as sm
 from typing import List, Dict
 import numpy as np 
 import polars.selectors as cs
+import os 
 
 ## Cargamos rutina de pronóstico
 from utils import train_and_forecast, get_SHAP
@@ -41,7 +42,8 @@ creds = Credentials.from_service_account_file('config/api_keys/pronosticos-49370
 client = gspread.authorize(creds)
 
 # 3. Open Google Sheet and update
-sh = client.open("insumos-tablero-pib")
+SPREADSHEET = os.getenv("GS_SPREADSHEET")
+sh = client.open(SPREADSHEET)
 
 # Diccionario de tabs de Google Sheet
 sheets = [
