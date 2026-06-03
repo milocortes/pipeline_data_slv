@@ -1,5 +1,13 @@
 from typing import List, Dict
-import os
+import os 
+import socket
+
+## Función de construye el AWS_ENDPOINT_URL a partir del DNS del servidor y el puerto
+def build_aws_endpoint_url() -> str :
+
+    IP_DNS = socket.gethostbyname(os.getenv("RUSTFS_DNS"))
+    PORT = os.getenv("RUSTFS_PORT")
+    return f'http://{IP_DNS}:{PORT}'
 
 ## Método que construye diccionarios con las variables de ambiente de la configuración general
 def build_general_config() -> Dict[str,str]:
@@ -13,8 +21,9 @@ def build_general_config() -> Dict[str,str]:
 
 ## Método que construye diccionarios con las variables de ambiente de la configuración del storage
 def build_storage_config() -> Dict[str,str]:
+    
     return {
-        'AWS_ENDPOINT_URL': os.getenv("AWS_ENDPOINT_URL"),
+        'AWS_ENDPOINT_URL': build_aws_endpoint_url(),
         'AWS_REGION': os.getenv("AWS_REGION"),
         'AWS_ACCESS_KEY_ID': os.getenv("AWS_ACCESS_KEY_ID"),
         'AWS_SECRET_ACCESS_KEY': os.getenv("AWS_SECRET_ACCESS_KEY"),

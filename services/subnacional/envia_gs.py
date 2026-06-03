@@ -34,7 +34,8 @@ creds = Credentials.from_service_account_file('config/api_keys/pronosticos-49370
 client = gspread.authorize(creds)
 
 # 3. Open Google Sheet and update
-sh = client.open("insumos-tablero-pib")
+SPREADSHEET = os.getenv("GS_SPREADSHEET")
+sh = client.open(SPREADSHEET)
 
 # Diccionario de tabs de Google Sheet
 sheets = [
