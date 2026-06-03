@@ -9,8 +9,8 @@ ENV service_account_gee="geoespacial@pib-geoespacial.iam.gserviceaccount.com"
 ENV gee_project="pib-geoespacial"
 
 # Storage environment variables
-ENV AWS_ENDPOINT_URL='http://127.0.0.1:9000'
-ENV AWS_REGION="us-east-1"
+ENV RUSTFS_DNS="127.0.0.1"
+ENV RUSTFS_PORT="9000"
 ENV AWS_ACCESS_KEY_ID="rustfsadmin"
 ENV AWS_SECRET_ACCESS_KEY="rustfsadmin"
 ENV allow_http='true' 
