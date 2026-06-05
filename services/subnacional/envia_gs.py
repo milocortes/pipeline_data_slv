@@ -5,6 +5,8 @@ import pandas as pd
 import polars.selectors as cs
 import numpy as np 
 
+import os 
+
 ## GS packages
 import gspread
 from google.oauth2.service_account import Credentials
@@ -39,6 +41,7 @@ sh = client.open(SPREADSHEET)
 
 # Diccionario de tabs de Google Sheet
 sheets = [
+            "pib-corriente-variacion",
             "subnacional-desagregacion",
             "subnacional-departamentos", 
             "nivel-subnacional-departamentos", 
@@ -190,6 +193,19 @@ subnacional_departamentos_departamentos = deptos.select(
                                 cs.float().round(3) # Redondeamos a tres digitos
                             )
 
+####----------------------------------------------- ####
+####           pib-corriente-variacion
+####----------------------------------------------- ####
+pib_corriente_variacion = pib.with_columns(
+                                crecimiento_interanual("gdp_us_corriente"), 
+                                crecimiento_trimestral("gdp_us_corriente")
+                            ).rename(
+                                {
+                                    "gdp_us_corriente" : "PIB Corriente", 
+                                    "datetime" : "Date"
+                                }
+                            )
+
 #### Guardamos dataframes de salida en un diccionario
 def ajusta_df(
     datos : pl.DataFrame
@@ -202,7 +218,16 @@ def ajusta_df(
         ).to_pandas().replace(np.nan, "")
 
 ### Reune tablas en un diccionario
+#### Agrega variación interanual a tabla subnacional_departamentos 
+subnacional_desagregacion = subnacional_desagregacion.join(
+                                subnacional_departamentos.select("Departamento", "Crecimiento Interanual"), 
+                                on = "Departamento"
+                            ).rename(
+                                {"Departamento" : "Depto"}
+                            )
+
 outputs_tables = {
+    "pib-corriente-variacion" : ajusta_df(pib_corriente_variacion.tail(1)), 
     "subnacional-desagregacion" : subnacional_desagregacion.to_pandas(),
     "subnacional-departamentos" : ajusta_df(subnacional_departamentos), 
     "nivel-subnacional-departamentos" : ajusta_df(nivel_subnacional_departamentos), 
