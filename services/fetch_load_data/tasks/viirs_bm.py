@@ -6,22 +6,20 @@ import tomllib
 from pathlib import Path
 import polars as pl
 
-## Carga configuración
-FP = Path(".")
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
 
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
-
-## Carga API Key
-with open(FP/"config"/"api_keys"/"api_keys.toml", "rb") as f:
-    api = tomllib.load(f)
+## Carga configuración general
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 # Set NASA EarthData Token (envvar or alternative recommended)
-bearer = api["keys"]["blackmarble"]
+bearer = os.getenv("BLACKMARBLE")
+
+## Carga configuración
+FP = Path(".")
 
 # Retrieve GADM polygon of Lebanon
 gdf = gpd.read_file(

@@ -18,15 +18,18 @@ from gee.gee_functions import (calculateMonthlyNDVI, calculateMonthlyPrecipitati
 ## Carga configuración
 FP = Path(".")
 
-with open(FP/"config"/"general"/"config.toml", "rb") as f:
-    config = tomllib.load(f)
+## Cargamos métodos que construyen las configuraciones generales y del storage
+from utils import build_general_config, build_storage_config
+
+## Carga configuración general
+config = build_general_config()
 
 ## Carga Configuración de almacenamiento
-with open(FP/"config"/"storage"/"storage_config.toml", "rb") as f:
-    storage_options = tomllib.load(f)
+storage_options = build_storage_config()
 
 ## Carga GEE API Key
-gee_api_key = str(FP/"config"/"api_keys"/"pib-geoespacial-3ba5fc82e62c.json")
+GEE_API_KEY_FILE_NAME = os.getenv("GEE_API_KEY_FILE")
+gee_api_key = str(FP/"config"/"api_keys"/GEE_API_KEY_FILE_NAME)
 
 
 ## Trigger the authentication flow.
