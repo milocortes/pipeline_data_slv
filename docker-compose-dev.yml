@@ -14,6 +14,8 @@ services:
         condition: service_healthy
         required: true
     environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
       _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW__API__SECRET_KEY: bar
       AIRFLOW__API_AUTH__JWT_SECRET: foo
@@ -29,14 +31,29 @@ services:
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
       AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
       AIRFLOW_GID: "0"
       AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
       AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
       RUSTFS_SECRET_KEY: rustfsadmin
       RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     healthcheck:
       test:
         - CMD
@@ -82,6 +99,10 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
   airflow-dag-processor:
     command:
       - dag-processor
@@ -96,6 +117,8 @@ services:
         condition: service_healthy
         required: true
     environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
       _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW__API__SECRET_KEY: bar
       AIRFLOW__API_AUTH__JWT_SECRET: foo
@@ -111,14 +134,29 @@ services:
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
       AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
       AIRFLOW_GID: "0"
       AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
       AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
       RUSTFS_SECRET_KEY: rustfsadmin
       RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     healthcheck:
       test:
         - CMD-SHELL
@@ -157,6 +195,10 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
   airflow-data:
     command:
       - -c
@@ -175,11 +217,36 @@ services:
     entrypoint:
       - /bin/bash
     environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW__API__SECRET_KEY: bar
       AIRFLOW__API_AUTH__JWT_SECRET: foo
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__TEST_CONNECTION: Enabled
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
+      AIRFLOW_GID: "0"
+      AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
+      AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     image: apache/airflow:3.1.2
     networks:
       default: null
@@ -193,6 +260,10 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
   airflow-init:
     command:
       - -c
@@ -300,14 +371,29 @@ services:
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
       AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
       AIRFLOW_GID: "0"
       AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
       AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
       RUSTFS_SECRET_KEY: rustfsadmin
       RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     image: apache/airflow:3.1.2
     networks:
       default: null
@@ -337,6 +423,10 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
   airflow-scheduler:
     command:
       - scheduler
@@ -351,6 +441,8 @@ services:
         condition: service_healthy
         required: true
     environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
       _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW__API__SECRET_KEY: bar
       AIRFLOW__API_AUTH__JWT_SECRET: foo
@@ -366,14 +458,29 @@ services:
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
       AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
       AIRFLOW_GID: "0"
       AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
       AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
       RUSTFS_SECRET_KEY: rustfsadmin
       RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     healthcheck:
       test:
         - CMD
@@ -414,6 +521,10 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
   airflow-triggerer:
     command:
       - triggerer
@@ -428,6 +539,8 @@ services:
         condition: service_healthy
         required: true
     environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
       _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW__API__SECRET_KEY: bar
       AIRFLOW__API_AUTH__JWT_SECRET: foo
@@ -443,14 +556,29 @@ services:
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
       AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
       AIRFLOW_GID: "0"
       AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
       AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
       RUSTFS_SECRET_KEY: rustfsadmin
       RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     healthcheck:
       test:
         - CMD-SHELL
@@ -489,6 +617,10 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
   airflow-worker:
     command:
       - celery
@@ -507,6 +639,8 @@ services:
         condition: service_healthy
         required: true
     environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
       _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW__API__SECRET_KEY: bar
       AIRFLOW__API_AUTH__JWT_SECRET: foo
@@ -522,15 +656,30 @@ services:
       AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "60"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
       AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
       AIRFLOW_GID: "0"
       AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
       AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
       DUMB_INIT_SETSID: "0"
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
       RUSTFS_SECRET_KEY: rustfsadmin
       RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
     healthcheck:
       test:
         - CMD-SHELL
@@ -569,6 +718,44 @@ services:
         source: airflow-data-volume
         target: /data
         volume: {}
+      - type: bind
+        source: /tmp
+        target: /tmp
+        bind: {}
+  models:
+    build:
+      context: /home/milo/Documents/egtp/iniciativas/pipeline_data_slv
+      dockerfile: ./services/models/Dockerfile-compose-dev
+    container_name: models
+    environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
+      AIRFLOW_GID: "0"
+      AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
+      AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
+    image: models-dev:latest
+    networks:
+      default: null
   postgres:
     environment:
       POSTGRES_DB: airflow
@@ -651,15 +838,25 @@ services:
     environment:
       _AIRFLOW_WWW_USER_PASSWORD: airflow
       _AIRFLOW_WWW_USER_USERNAME: airflow
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
       AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
       AIRFLOW_APISERVER_PORT: "8080"
+      AIRFLOW_GID: "0"
+      AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
+      AIRFLOW_UID: "1000"
       AWS_ACCESS_KEY_ID: rustfsadmin
       AWS_REGION: us-east-1
       AWS_SECRET_ACCESS_KEY: rustfsadmin
       BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
       LSIB: FAO/GAUL/2015/level0
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
       RUSTFS_DNS: rustfs
       RUSTFS_PORT: "9000"
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_SERVER_DOMAINS: example.com
       allow_http: "true"
       gee_project: pib-geoespacial
       service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
@@ -672,6 +869,40 @@ services:
         target: 8502
         published: "8502"
         protocol: tcp
+  subnacional:
+    build:
+      context: /home/milo/Documents/egtp/iniciativas/pipeline_data_slv
+      dockerfile: ./services/subnacional/Dockerfile-compose-dev
+    container_name: subnacional
+    environment:
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
+      AIRFLOW_APISERVER_DOMAIN: http://airflow-apiserver
+      AIRFLOW_APISERVER_PORT: "8080"
+      AIRFLOW_GID: "0"
+      AIRFLOW_IMAGE_NAME: apache/airflow:3.1.2
+      AIRFLOW_UID: "1000"
+      AWS_ACCESS_KEY_ID: rustfsadmin
+      AWS_REGION: us-east-1
+      AWS_SECRET_ACCESS_KEY: rustfsadmin
+      BUCKET_NAME: pronostico
+      GS_API_KEY_FILE: pronosticos-493700-56f57502ffb3.json
+      GS_SPREADSHEET: insumos-tablero-pib
+      LSIB: FAO/GAUL/2015/level0
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_DNS: rustfs
+      RUSTFS_PORT: "9000"
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_SERVER_DOMAINS: example.com
+      allow_http: "true"
+      gee_project: pib-geoespacial
+      service_account_gee: geoespacial@pib-geoespacial.iam.gserviceaccount.com
+      start_date: "2012-01-01"
+    image: subnacional-dev:latest
+    networks:
+      default: null
 networks:
   default:
     name: pipeline_data_slv_default
@@ -688,6 +919,7 @@ x-airflow-common:
       condition: service_healthy
   env_file:
     - .env
+    - .env-dev
   environment:
     _PIP_ADDITIONAL_REQUIREMENTS: apache-airflow-providers-docker
     AIRFLOW__API__SECRET_KEY: bar
@@ -714,3 +946,4 @@ x-airflow-common:
     - ./plugins:/opt/airflow/plugins
     - /var/run/docker.sock:/var/run/docker.sock
     - airflow-data-volume:/data
+    - /tmp:/tmp

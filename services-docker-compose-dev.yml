@@ -6,9 +6,12 @@ x-airflow-common:
     AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: 60
     AIRFLOW__API_AUTH__JWT_SECRET: foo
     AIRFLOW__API__SECRET_KEY: bar
+  env_file:
+    - .env-dev
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - airflow-data-volume:/data
+    - /tmp:/tmp  # Add this line
 
 services:
   rustfs:
@@ -34,23 +37,22 @@ services:
     container_name : streamlit_app
     ports:
         - 8502:8502
-    environment:
-        - start_date=${start_date}
-        - LSIB=${LSIB}
-        - BUCKET_NAME=${BUCKET_NAME}
-        - service_account_gee=${service_account_gee}
-        - gee_project=${gee_project}
-        - RUSTFS_DNS=${RUSTFS_DNS}
-        - RUSTFS_PORT=${RUSTFS_PORT}
-        - AWS_REGION=${AWS_REGION}
-        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-        - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-        - allow_http=${allow_http}
-        - AIRFLOW_APISERVER_DOMAIN=${AIRFLOW_APISERVER_DOMAIN}
-        - AIRFLOW_APISERVER_PORT=${AIRFLOW_APISERVER_PORT}
-        - _AIRFLOW_WWW_USER_PASSWORD=${_AIRFLOW_WWW_USER_PASSWORD}
-        - _AIRFLOW_WWW_USER_USERNAME=${_AIRFLOW_WWW_USER_PASSWORD}
-      
+    env_file:
+      - .env-dev
+  models:
+    image: models-dev:latest
+    build:
+      dockerfile: ./services/models/Dockerfile-compose-dev
+    container_name : models
+    env_file:
+      - .env-dev
+  subnacional:
+    image: subnacional-dev:latest
+    build:
+      dockerfile: ./services/subnacional/Dockerfile-compose-dev
+    container_name : subnacional
+    env_file:
+      - .env-dev
   airflow-apiserver:
     <<: *airflow-common
 

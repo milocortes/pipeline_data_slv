@@ -22,7 +22,7 @@ docker compose -f docker-compose.yml up  -d --build
 Or the Docker compose dev file:
 
 ```bash
-docker compose -f docker-compose-dev.yml up  -d --build
+docker compose -f docker-compose-dev.yml up  -d --build --force-recreate
 ```
 
 Wait for a few seconds and you should be able to access the examples at http://localhost:8080/.
