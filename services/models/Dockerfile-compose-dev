@@ -1,0 +1,29 @@
+FROM astral/uv:python3.12-bookworm-slim
+
+# 1. Declare the build argument (matches the key in compose.yaml args)
+#ARG RUSTFS_DNS
+#ARG RUSTFS_PORT
+
+# 3. Optional: Persist it as an environment variable for container runtime
+#ENV RUSTFS_DNS=${RUSTFS_DNS}
+#ENV RUSTFS_PORT=${RUSTFS_PORT}
+#ENV RUSTFS_DNS="rustfs"
+#ENV RUSTFS_PORT="9000"
+
+RUN mkdir -p /config/api_keys
+COPY pronosticos-493700-56f57502ffb3.json /config/api_keys
+COPY ./services/models/utils /utils 
+COPY ./services/models/pyproject.toml /pyproject.toml
+COPY ./services/models/uv.lock /uv.lock
+COPY ./services/models/.python-version /.python-version
+COPY ./services/models/x13as /usr/bin/
+
+# Ensure it has execution permissions
+RUN chmod +x /usr/bin/x13as
+RUN apt update
+RUN apt install -y libgfortran5
+
+# Copy task
+COPY ./services/models/arimax_models_rev.py /arimax_models_rev.py
+COPY ./services/models/ml_models.py /ml_models.py
+RUN uv sync
