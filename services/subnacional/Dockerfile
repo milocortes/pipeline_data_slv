@@ -47,6 +47,9 @@ ENV AWS_ACCESS_KEY_ID="rustfsadmin"
 ENV AWS_SECRET_ACCESS_KEY="rustfsadmin"
 ENV allow_http='true' 
 
+# API Keys environment variables
+ENV GS_API_KEY_FILE="pronosticos-493700-56f57502ffb3.json" 
+
 ## Ejecuta tarea
 COPY ./run_subnacional.sh /run_subnacional.sh
 RUN chmod +x run_subnacional.sh
