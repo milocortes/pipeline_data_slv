@@ -5,6 +5,7 @@ from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.sdk import DAG
 from airflow.timetables.interval import CronDataIntervalTimetable
 #from docker.types import Mount
+from utils import ENVS_VARS
 
 with DAG(
     dag_id="forecast_modelos_ml",
@@ -18,13 +19,19 @@ with DAG(
 ):
     forecast_ml = DockerOperator(
         task_id="docker_forecast_modelos_ml",
-        image="models-test:latest",
+        #image="models-test:latest",
+        image="models-dev:latest",
+        # Explicitly forward the variable here:
+        environment={
+            ENV : os.environ.get(ENV) for ENV in ENVS_VARS
+        },
         command=[
             "uv", 
             "run", 
             "ml_models.py"
         ],
-        network_mode="host",
+        #network_mode="host",
+        network_mode="pipeline_data_slv_default"
         # Note: this host path is on the HOST, not in the Airflow docker container.
         #mounts=[Mount(source="docker_airflow-data-volume", target="/data", type="volume")],
         #mount_tmp_dir=False,
