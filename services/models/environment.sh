@@ -16,3 +16,7 @@ export allow_http='true' # Required for non-HTTPS endpoints
 
 # Google Sheets environment variables
 export GS_SPREADSHEET="insumos-tablero-pib"
+
+# API Keys environment variables
+export GS_API_KEY_FILE="pronosticos-493700-56f57502ffb3.json" 
+

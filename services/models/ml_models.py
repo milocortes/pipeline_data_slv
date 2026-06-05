@@ -52,8 +52,10 @@ storage_options = build_storage_config()
 # 1. Authenticate
 console.print("1.-", "Autenticando en GS", style="bold red")
 
+GS_API_KEY_FILE = os.getenv("GS_API_KEY_FILE")
+
 scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
-creds = Credentials.from_service_account_file('config/api_keys/pronosticos-493700-56f57502ffb3.json', scopes=scopes)
+creds = Credentials.from_service_account_file(f'config/api_keys/{GS_API_KEY_FILE}', scopes=scopes)
 client = gspread.authorize(creds)
 
 # 3. Open Google Sheet and update
