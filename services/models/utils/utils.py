@@ -40,10 +40,10 @@ modelos_nombres = {f"M{i}" : f"Modelo lineal {i}"  for i in range(1,6)}
 
 ## Nombre completo de Covariables
 long_name_covariables = {
-    'consumo_elect_al_publico' : 'Consumo electrico trimestral agregado al publico en kWh', 
-    'consumo_elect_comercio' : 'Consumo electrico trimestral agregado a comercios en kWh', 
-    'consumo_elect_industria' : 'Consumo electrico trimestral agregado a industria en kWh', 
-    'consumo_elect_total' : 'Consumo electrico trimestral agregado total en kWh', 
+    'consumo_elect_al_publico' : 'Consumo Electrico al Publico', 
+    'consumo_elect_comercio' : 'Consumo Electrico a Comercios', 
+    'consumo_elect_industria' : 'Consumo Electrico Industrial', 
+    'consumo_elect_total' : 'Consumo Electrico Total', 
     'evi_gee' : 'EVI (Enhanced Vegetation Index)', 
     'ndvi_gee' : 'NDVI (Normalized Difference Vegetation Index)', 
     'precip' : 'Precipitacion (milímetros)', 
