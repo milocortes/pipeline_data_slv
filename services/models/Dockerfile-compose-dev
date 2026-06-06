@@ -17,6 +17,7 @@ COPY ./services/models/pyproject.toml /pyproject.toml
 COPY ./services/models/uv.lock /uv.lock
 COPY ./services/models/.python-version /.python-version
 COPY ./services/models/x13as /usr/bin/
+COPY ./services/models/datos /datos
 
 # Ensure it has execution permissions
 RUN chmod +x /usr/bin/x13as
@@ -26,4 +27,6 @@ RUN apt install -y libgfortran5
 # Copy task
 COPY ./services/models/arimax_models_rev.py /arimax_models_rev.py
 COPY ./services/models/ml_models.py /ml_models.py
+COPY ./services/models/crea_tablas.py /crea_tablas.py
+
 RUN uv sync
