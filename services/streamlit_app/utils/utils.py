@@ -35,14 +35,25 @@ def build_general_config() -> Dict[str,str]:
 ## Método que construye diccionarios con las variables de ambiente de la configuración del storage
 def build_storage_config() -> Dict[str,str]:
     
-    return {
-        'AWS_ENDPOINT_URL': build_aws_endpoint_url(),
-        'AWS_REGION': os.getenv("AWS_REGION"),
-        'AWS_ACCESS_KEY_ID': os.getenv("AWS_ACCESS_KEY_ID"),
-        'AWS_SECRET_ACCESS_KEY': os.getenv("AWS_SECRET_ACCESS_KEY"),
-        'allow_http': os.getenv("allow_http")
-    }
+    S3_AWS_STORAGE = bool(os.getenv("S3_AWS_STORAGE"))
 
+    if  S3_AWS_STORAGE:
+        return {
+            'AWS_REGION': os.getenv("AWS_REGION"),
+            'AWS_ACCESS_KEY_ID': os.getenv("AWS_ACCESS_KEY_ID"),
+            'AWS_SECRET_ACCESS_KEY': os.getenv("AWS_SECRET_ACCESS_KEY"),
+            #'AWS_S3_LOCKING_PROVIDER': 'dynamodb',
+            #'DELTA_DYNAMO_TABLE_NAME': 'delta_log',
+        }
+    else:
+        return {
+            'AWS_ENDPOINT_URL': build_aws_endpoint_url(),
+            'AWS_REGION': os.getenv("AWS_REGION"),
+            'AWS_ACCESS_KEY_ID': os.getenv("AWS_ACCESS_KEY_ID"),
+            'AWS_SECRET_ACCESS_KEY': os.getenv("AWS_SECRET_ACCESS_KEY"),
+            'allow_http': os.getenv("allow_http")
+        }
+        
 ## Diccionario de nombres de archivos raw del Banco de la República 
 BR_VAR_NAME : Dict[str,str]= {
     "indice_vol_encad" : "Producto Interno Bruto trimestral por el enfoque de la producción", 

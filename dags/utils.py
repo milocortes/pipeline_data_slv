@@ -18,6 +18,7 @@ ENVS_VARS = [
         "AWS_ACCESS_KEY_ID",
         "AWS_SECRET_ACCESS_KEY",
         "allow_http",
+        "S3_AWS_STORAGE",
         "AIRFLOW_APISERVER_DOMAIN",
         "AIRFLOW_APISERVER_PORT",
         "_AIRFLOW_WWW_USER_PASSWORD",
