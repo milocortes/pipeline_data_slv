@@ -21,7 +21,7 @@ with DAG(
     crea_tablas = KubernetesPodOperator(
         task_id="k8s_crea_tablas",
         #image="models-test:latest",
-        image="models-dev:1.0.0",
+        image="models:1.0.0",
         cmds=[
             "uv", 
             "run", 
