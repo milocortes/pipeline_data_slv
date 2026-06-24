@@ -19,6 +19,11 @@ with DAG(
     forecast_ml = KubernetesPodOperator(
         task_id="k8s_forecast_modelos_ml",
         image="models:1.0.0",
+        cmds=[
+            "uv", 
+            "run", 
+            "ml_models.py"
+        ],
         # Fetch all variables from a config and secret natively
         env_from=[
             k8s.V1EnvFromSource(
