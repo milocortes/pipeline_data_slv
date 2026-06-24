@@ -5,6 +5,7 @@ from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperato
 from airflow.sdk import DAG
 from airflow.timetables.interval import CronDataIntervalTimetable
 from utils import ENVS_VARS
+from kubernetes.client import models as k8s
 
 with DAG(
     dag_id="crea_tablas",
@@ -26,10 +27,15 @@ with DAG(
             "run", 
             "crea_tablas.py"
         ],
-        # Explicitly forward the variable here:
-        environment={
-            ENV : os.environ.get(ENV) for ENV in ENVS_VARS
-        },
+        # Fetch all variables from a secret natively
+        env_from=[
+            k8s.V1EnvFromSource(
+                secret_ref=k8s.V1SecretEnvSource(name="secrets")
+            ),
+            k8s.V1EnvFromSource(
+                config_map_ref=k8s.V1ConfigMapEnvSource(name="config")
+            ),
+        ],
         namespace="airflow",
         name="k8s_crea_tablas",
         in_cluster=True,
