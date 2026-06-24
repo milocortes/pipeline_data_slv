@@ -27,9 +27,9 @@ def build_general_config() -> Dict[str,str]:
 ## Método que construye diccionarios con las variables de ambiente de la configuración del storage
 def build_storage_config() -> Dict[str,str]:
     
-    S3_AWS_STORAGE = bool(os.getenv("S3_AWS_STORAGE"))
+    S3_AWS_STORAGE = os.getenv("S3_AWS_STORAGE")
 
-    if  S3_AWS_STORAGE:
+    if  S3_AWS_STORAGE == 'True':
         return {
             'AWS_REGION': os.getenv("AWS_REGION"),
             'AWS_ACCESS_KEY_ID': os.getenv("AWS_ACCESS_KEY_ID"),

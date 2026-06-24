@@ -15,21 +15,21 @@ x-airflow-common:
 
 services:
   # Comentamos el servicio de rustfs porque usaremos S3
-  #rustfs:
-  #  container_name: rustfs-storage
-  #  ports:
-  #      - 9000:9000
-  #      - 9001:9001
-  #  volumes:
-  #      - /mnt/rustfs/data:/data
-  #  environment:
-  #      - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
-  #      - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
-  #      - RUSTFS_CONSOLE_ENABLE=${RUSTFS_CONSOLE_ENABLE}
-  #      - RUSTFS_SERVER_DOMAINS=${RUSTFS_SERVER_DOMAINS}
-  #  image: rustfs/rustfs:latest
-  #  command: --address :9000 --console-enable --server-domains example.com
-  #      --access-key rustfsadmin --secret-key rustfsadmin /data
+  rustfs:
+    container_name: rustfs-storage
+    ports:
+        - 9000:9000
+        - 9001:9001
+    volumes:
+        - /mnt/rustfs/data:/data
+    environment:
+        - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
+        - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+        - RUSTFS_CONSOLE_ENABLE=${RUSTFS_CONSOLE_ENABLE}
+        - RUSTFS_SERVER_DOMAINS=${RUSTFS_SERVER_DOMAINS}
+    image: rustfs/rustfs:latest
+    command: --address :9000 --console-enable --server-domains example.com
+        --access-key rustfsadmin --secret-key rustfsadmin /data
 
   streamlit_app:
     image: streamlit-dev
