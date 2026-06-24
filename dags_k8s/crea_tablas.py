@@ -4,7 +4,6 @@ from datetime import datetime
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.sdk import DAG
 from airflow.timetables.interval import CronDataIntervalTimetable
-from utils import ENVS_VARS
 from kubernetes.client import models as k8s
 
 with DAG(
@@ -20,14 +19,13 @@ with DAG(
 
     crea_tablas = KubernetesPodOperator(
         task_id="k8s_crea_tablas",
-        #image="models-test:latest",
         image="models:1.0.0",
         cmds=[
             "uv", 
             "run", 
             "crea_tablas.py"
         ],
-        # Fetch all variables from a secret natively
+        # Fetch all variables from a config and secret natively
         env_from=[
             k8s.V1EnvFromSource(
                 secret_ref=k8s.V1SecretEnvSource(name="secrets")

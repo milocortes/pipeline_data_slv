@@ -4,8 +4,7 @@ from datetime import datetime
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.sdk import DAG
 from airflow.timetables.interval import CronDataIntervalTimetable
-#from docker.types import Mount
-from utils import ENVS_VARS
+from kubernetes.client import models as k8s
 
 with DAG(
     dag_id="forecast_modelos_lineales",
@@ -19,20 +18,24 @@ with DAG(
 ):
 
     forecast_arimax = KubernetesPodOperator(
-        task_id="docker_forecast_modelos_lineales",
-        #image="models-test:latest",
-        image="models-dev:latest",
+        task_id="k8s_forecast_modelos_lineales",
+        image="models:1.0.0",
         cmds=[
             "uv", 
             "run", 
             "arimax_models_rev.py"
         ],
-        # Explicitly forward the variable here:
-        environment={
-            ENV : os.environ.get(ENV) for ENV in ENVS_VARS
-        },
+        # Fetch all variables from a config and secret natively
+        env_from=[
+            k8s.V1EnvFromSource(
+                secret_ref=k8s.V1SecretEnvSource(name="secrets")
+            ),
+            k8s.V1EnvFromSource(
+                config_map_ref=k8s.V1ConfigMapEnvSource(name="config")
+            ),
+        ],
         namespace="airflow",
-        name="echo-docker",
+        name="k8s_forecast_modelos_lineales",
         in_cluster=True,
         image_pull_policy="IfNotPresent",
         is_delete_operator_pod=True,

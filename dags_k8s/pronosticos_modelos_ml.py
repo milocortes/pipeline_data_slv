@@ -1,11 +1,10 @@
 import os
 from datetime import datetime
 
-from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.sdk import DAG
 from airflow.timetables.interval import CronDataIntervalTimetable
-#from docker.types import Mount
-from utils import ENVS_VARS
+from kubernetes.client import models as k8s
 
 with DAG(
     dag_id="forecast_modelos_ml",
@@ -17,24 +16,23 @@ with DAG(
     #schedule=CronDataIntervalTimetable("@monthly", "UTC"),
     catchup=True,
 ):
-    forecast_ml = DockerOperator(
-        task_id="docker_forecast_modelos_ml",
-        #image="models-test:latest",
-        image="models-dev:latest",
-        # Explicitly forward the variable here:
-        environment={
-            ENV : os.environ.get(ENV) for ENV in ENVS_VARS
-        },
-        command=[
-            "uv", 
-            "run", 
-            "ml_models.py"
+    forecast_ml = KubernetesPodOperator(
+        task_id="k8s_forecast_modelos_ml",
+        image="models:1.0.0",
+        # Fetch all variables from a config and secret natively
+        env_from=[
+            k8s.V1EnvFromSource(
+                secret_ref=k8s.V1SecretEnvSource(name="secrets")
+            ),
+            k8s.V1EnvFromSource(
+                config_map_ref=k8s.V1ConfigMapEnvSource(name="config")
+            ),
         ],
-        #network_mode="host",
-        network_mode="pipeline_data_slv_default"
-        # Note: this host path is on the HOST, not in the Airflow docker container.
-        #mounts=[Mount(source="docker_airflow-data-volume", target="/data", type="volume")],
-        #mount_tmp_dir=False,
+        namespace="airflow",
+        name="k8s_forecast_modelos_ml",
+        in_cluster=True,
+        image_pull_policy="IfNotPresent",
+        is_delete_operator_pod=True,
     )
 
     forecast_ml
