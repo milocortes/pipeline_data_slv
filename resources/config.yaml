@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  # General environment variables
+  start_date : "2012-01-01"
+  LSIB : "FAO/GAUL/2015/level0"
+  BUCKET_NAME : "pronostico"
+  service_account_gee : "geoespacial@pib-geoespacial.iam.gserviceaccount.com"
+  gee_project : "pib-geoespacial"
+  
+  # Google Sheets environment variables
+  GS_SPREADSHEET : "test_pronostico"
+
+  # API Keys environment variables
+  GS_API_KEY_FILE : "pronosticos-493700-56f57502ffb3.json" 
+  
+  # Apache Airflow environment variables
+  AIRFLOW_APISERVER_DOMAIN : "http://airflow-api-server"
+  AIRFLOW_APISERVER_PORT : "8080"
+  _AIRFLOW_WWW_USER_PASSWORD : "airflow"
+  _AIRFLOW_WWW_USER_USERNAME : "airflow"
+
+  # Storage environment variables
+  S3_AWS_STORAGE : 'False'
+  allow_http : 'true' 
+  RUSTFS_DNS : "rustfs"
+  RUSTFS_PORT : "9000"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secrets
+type: Opaque
+stringData:
+  AWS_REGION : "us-east-1"
+  AWS_ACCESS_KEY_ID : "rustfsadmin" 
+  AWS_SECRET_ACCESS_KEY : "rustfsadmin"

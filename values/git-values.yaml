@@ -1,0 +1,40 @@
+# Override default values in the Apache Airflow Helm Chart
+#
+defaultAirflowTag: "3.1.2"
+airflowVersion: "3.1.2"
+
+# 4 - Dags in git repository
+dags:
+  persistence:
+    enabled: false
+  gitSync:
+    enabled: true
+
+    # git repo clone url
+    # ssh example: git@github.com:apache/airflow.git
+    # https example: https://github.com/apache/airflow.git
+    repo: https://github.com/milocortes/pipeline_data_slv.git
+    branch: main
+    rev: HEAD
+    # The git revision (branch, tag, or hash) to check out, v4 only
+    ref: xd-friday-airflow3
+    depth: 1
+    # the number of consecutive failures allowed before aborting
+    maxFailures: 0
+    # subpath within the repo where dags are located
+    # should be "" if dags are at repo root
+    subPath: "dags_k8s"
+
+# 1 - Overriding the default user since we use a different database
+webserver:
+  # Create initial user.
+  defaultUser:
+    enabled: true
+    role: Admin
+    username: airflow
+    email: airflow@example.com
+    firstName: Airflow
+    lastName: Second Edition
+    password: airflow
+
+
