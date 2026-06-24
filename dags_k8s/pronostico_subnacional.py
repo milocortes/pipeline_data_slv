@@ -19,10 +19,6 @@ with DAG(
     subnacional = KubernetesPodOperator(
         task_id="k8s_estimacion_subnacional",
         image="subnacional:1.0.0",
-        # Explicitly forward the variable here:
-        environment={
-            ENV : os.environ.get(ENV) for ENV in ENVS_VARS
-        },
         # Fetch all variables from a config and secret natively
         env_from=[
             k8s.V1EnvFromSource(
