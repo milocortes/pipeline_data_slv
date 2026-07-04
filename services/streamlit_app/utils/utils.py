@@ -481,3 +481,93 @@ def time_series_plot_subnacional(ts_var : str,
 
     if ts_var in ["electricidad_departamento", "gdp_us_corriente"]:
         st.warning('Aquí se agregará método para cargar la tabla', icon="⚠️")
+
+#############################################
+### - ACTUALIZACIÓN DE TOKENS ------------- #
+#############################################
+
+def get_tokens() -> pl.DataFrame:
+
+    ## Carga configuración general
+    config = build_general_config()
+
+    ## Carga Configuración de almacenamiento
+    storage_options = build_storage_config()
+
+
+    # Cargamos Tokens actuales
+    tokens = pl.read_delta(
+            f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys",
+            storage_options=storage_options,
+        )
+
+    return tokens
+
+def actualiza_token(
+    provider : str,
+    token : str
+    ) -> None:
+
+    ## Carga configuración general
+    config = build_general_config()
+
+    ## Carga Configuración de almacenamiento
+    storage_options = build_storage_config()
+
+    ## Ruta en Delta Lake de la tabla de Tokens
+    URL_DELTA_TABLE = f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys"
+
+    ## Verifica si la Tabla existe:
+    if DeltaTable.is_deltatable(URL_DELTA_TABLE, storage_options=storage_options):
+
+        # Cargamos Tokens actuales
+        df_tokens = pl.read_delta(
+                f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys",
+                storage_options=storage_options,
+            )
+
+        ## Cambiamos el token del provedor suministrado por el usuario
+        df_tokens = df_tokens.with_columns(
+            pl.when(
+                pl.col("provider")==provider
+            ).then(
+                pl.lit(token)
+            ).otherwise(
+                pl.col("api_key")
+            ).alias("api_key"))
+
+        ## Sobre escribimos la tabla den DeltaLake
+        df_tokens.write_delta(
+            f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys",
+            storage_options=storage_options,
+            mode = "overwrite"
+        )
+    else:
+        # Crea el dataframe con las API Keys de FRED y BlackMarble
+        data = {
+                "provider" : [
+                        "BLACKMARBLE", "FRED"
+                    ], 
+                "api_key": [
+                        "", 
+                        ""
+                    ]
+                }
+        df_tokens = pl.DataFrame(data)
+
+        ## Cambiamos el token del provedor suministrado por el usuario
+        df_tokens = df_tokens.with_columns(
+            pl.when(
+                pl.col("provider")==provider
+            ).then(
+                pl.lit(token)
+            ).otherwise(
+                pl.col("api_key")
+            ).alias("api_key"))
+
+        ## Sobre escribimos la tabla den DeltaLake
+        df_tokens.write_delta(
+            f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys",
+            storage_options=storage_options,
+            mode = "overwrite"
+        )
