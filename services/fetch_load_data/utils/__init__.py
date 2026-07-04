@@ -1,1 +1,1 @@
-from .utils import build_general_config, build_storage_config
+from .utils import build_general_config, build_storage_config, get_token

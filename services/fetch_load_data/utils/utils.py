@@ -40,3 +40,32 @@ def build_storage_config() -> Dict[str,str]:
             'AWS_SECRET_ACCESS_KEY': os.getenv("AWS_SECRET_ACCESS_KEY"),
             'allow_http': os.getenv("allow_http")
         }
+
+## Función que devuelve el token del provedor seleccionado
+def get_token(provider : str):
+
+    ## Carga configuración general
+    config = build_general_config()
+
+    ## Carga Configuración de almacenamiento
+    storage_options = build_storage_config()
+
+    ## Ruta en Delta Lake de la tabla de Tokens
+    URL_DELTA_TABLE = f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys"
+
+    ## Verifica si la Tabla existe:
+    if DeltaTable.is_deltatable(URL_DELTA_TABLE, storage_options=storage_options):
+
+        # Cargamos Tokens actuales
+        df_tokens = pl.read_delta(
+                f"s3://{config['BUCKET_NAME']}/fred_blackmarble_api_keys",
+                storage_options=storage_options,
+            )
+
+        # Consultamos token 
+        token = df_tokens.filter(provider=provedor)["api_key"][0]
+
+        return token
+
+    else:
+        return None

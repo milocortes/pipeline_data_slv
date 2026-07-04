@@ -7,7 +7,7 @@ from pathlib import Path
 import polars as pl
 
 ## Cargamos métodos que construyen las configuraciones generales y del storage
-from utils import build_general_config, build_storage_config
+from utils import build_general_config, build_storage_config, get_token
 
 ## Carga configuración general
 config = build_general_config()
@@ -16,7 +16,7 @@ config = build_general_config()
 storage_options = build_storage_config()
 
 # Set NASA EarthData Token (envvar or alternative recommended)
-bearer = os.getenv("BLACKMARBLE")
+bearer = get_token("BLACKMARBLE")
 
 ## Carga configuración
 FP = Path(".")

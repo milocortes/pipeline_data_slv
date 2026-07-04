@@ -6,7 +6,7 @@ import sys
 import os 
 
 ## Cargamos métodos que construyen las configuraciones generales y del storage
-from utils import build_general_config, build_storage_config
+from utils import build_general_config, build_storage_config, get_token
 
 ## Carga configuración general
 config = build_general_config()
@@ -15,7 +15,7 @@ config = build_general_config()
 storage_options = build_storage_config()
 
 ## Carga token de FRED
-api = os.getenv("FRED")
+api = get_token("FRED")
 
 ## Obtenemos datos de la serie GDPC1
 fred = Fred(api_key=api)

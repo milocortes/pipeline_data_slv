@@ -8,7 +8,7 @@ import polars as pl
 import numpy as np 
 
 ## Cargamos métodos que construyen las configuraciones generales y del storage
-from utils import build_general_config, build_storage_config
+from utils import build_general_config, build_storage_config, get_token
 
 ## Carga configuración
 FP = Path(".")
@@ -20,7 +20,7 @@ config = build_general_config()
 storage_options = build_storage_config()
 
 # Set NASA EarthData Token (envvar or alternative recommended)
-bearer = os.getenv("BLACKMARBLE")
+bearer = get_token("BLACKMARBLE")
 
 # Retrieve GADM polygon of Lebanon
 gdf = gpd.read_file(

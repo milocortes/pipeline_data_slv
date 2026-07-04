@@ -30,7 +30,13 @@ services:
     image: rustfs/rustfs:latest
     command: --address :9000 --console-enable --server-domains example.com
         --access-key rustfsadmin --secret-key rustfsadmin /data
-
+  fecth_load_data:
+    image: fetch_load_data-dev:latest
+    build:
+      dockerfile: ./services/fetch_load_data/Dockerfile-compose-dev
+    container_name : fetch_load_data
+    env_file:
+      - .env-dev
   streamlit_app:
     image: streamlit-dev
     build:
