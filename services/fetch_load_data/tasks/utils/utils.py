@@ -1,6 +1,8 @@
 from typing import List, Dict
 import os 
 import socket
+from deltalake import DeltaTable
+import polars as pl 
 
 ## Función de construye el AWS_ENDPOINT_URL a partir del DNS del servidor y el puerto
 def build_aws_endpoint_url() -> str :
@@ -63,7 +65,7 @@ def get_token(provider : str):
             )
 
         # Consultamos token 
-        token = df_tokens.filter(provider=provedor)["api_key"][0]
+        token = df_tokens.filter(provider=provider)["api_key"][0]
 
         return token
 

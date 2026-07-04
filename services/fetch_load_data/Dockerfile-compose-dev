@@ -5,7 +5,7 @@ COPY pib-geoespacial-3ba5fc82e62c.json /config/api_keys
 
 COPY ./services/fetch_load_data/blackmarblepy_dist /blackmarblepy_dist
 COPY ./services/fetch_load_data/tasks /tasks 
-COPY ./services/fetch_load_data/utils /utils 
+COPY ./services/fetch_load_data/tasks/utils /tasks/utils 
 COPY ./services/fetch_load_data/pyproject.toml /pyproject.toml
 COPY ./services/fetch_load_data/uv.lock /uv.lock
 COPY ./services/fetch_load_data/.python-version /.python-version
