@@ -7,6 +7,8 @@ sudo mkdir -p /mnt/rustfs/{data,logs}
 
 # 2.- Network and Firewall
 # Ensure host port 9000 is open to external access (or consistent with custom port)
+sudo apt update
+sudo apt install ufw
 sudo ufw allow 9000/tcp
 
 # 3.- Configuration File Preparation
