@@ -9,6 +9,7 @@ import json
 import tomllib
 from pathlib import Path
 import polars as pl
+import os 
 
 ## Carga funciones
 from gee.gee_functions import (calculateMonthlyNDVI, calculateMonthlyPrecipitation, calculateMonthlyNDBI, 
@@ -29,6 +30,7 @@ storage_options = build_storage_config()
 
 ## Carga GEE API Key
 GEE_API_KEY_FILE_NAME = os.getenv("GEE_API_KEY_FILE")
+print("imprimiremos", GEE_API_KEY_FILE_NAME)
 gee_api_key = str(FP/"config"/"api_keys"/GEE_API_KEY_FILE_NAME)
 
 

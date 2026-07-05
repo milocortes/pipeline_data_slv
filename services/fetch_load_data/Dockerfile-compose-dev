@@ -1,5 +1,14 @@
 FROM astral/uv:python3.12-bookworm-slim
 
+# Install system dependencies, including libexpat1
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libexpat1 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /geojson
+COPY ./services/fetch_load_data/geojson/gadm41_SLV_0.geojson /geojson/gadm41_SLV_0.geojson
+COPY ./services/fetch_load_data/geojson/gadm41_SLV_1.geojson /geojson/gadm41_SLV_1.geojson
+
 RUN mkdir -p /config/api_keys
 COPY pib-geoespacial-3ba5fc82e62c.json /config/api_keys
 

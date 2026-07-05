@@ -9,6 +9,7 @@ import json
 import tomllib
 from pathlib import Path
 import polars as pl
+import os 
 
 ## Carga funciones
 from gee.gee_functions import (calculateMonthlyNDVI, calculateMonthlyPrecipitation, calculateMonthlyNDBI, 
