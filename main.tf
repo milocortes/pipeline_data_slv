@@ -28,6 +28,7 @@ module "gcp_compute_engine" {
   region       = local.region
   zone         = local.zone
   machine_type = "e2-standard-4"
+  //machine_type = "c4-standard-2"
 
   google_service_account_email = module.gcp_cloud_platform.google_service_account_email
   firewall_name                = "test-rule"
