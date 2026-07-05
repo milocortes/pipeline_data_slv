@@ -40,7 +40,7 @@ module "gcp_compute_engine" {
     },
     2 = {
       protocol = "tcp"
-      ports    = ["22", "8080"]
+      ports    = ["22", "8080", "8502", "9001"]
     },
   }
 }
