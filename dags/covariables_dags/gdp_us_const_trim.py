@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.sdk import DAG
@@ -7,14 +7,18 @@ from airflow.timetables.interval import CronDataIntervalTimetable
 #from docker.types import Mount
 from utils import ENVS_VARS
 
+START_LUNES = datetime(2026, 6, 29) # Calendarizamos para que la DAG se ejecute todos los Lunes
+DELTA = timedelta(weeks=4) # La DAG se ejecutará cada 4 semanas a partir de la fecha de inicio
+
 with DAG(
     dag_id="fetch_gdp_us_const_trim",
     description="Fetches USA GDP from the FRED API using Docker.",
-    start_date=datetime(2026, 1, 1),
+    start_date=START_LUNES,
     end_date=datetime(2030, 1, 3),
     max_active_tasks=1,  # Limits this DAG to 1 parallel tasks
     max_active_runs=1,    # Limits to 1 active run at a time
     #schedule=CronDataIntervalTimetable("@monthly", "UTC"),
+    schedule=DELTA,
     catchup=True,
 ):
     fetch_gdp_us_const_trim = DockerOperator(

@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.sdk import DAG
@@ -7,14 +7,18 @@ from airflow.timetables.interval import CronDataIntervalTimetable
 #from docker.types import Mount
 from utils import ENVS_VARS
 
+START_VIERNES = datetime(2026, 7, 3) # Calendarizamos para que la DAG se ejecute todos los Miercoles
+DELTA = timedelta(weeks=2) # La DAG se ejecutará cada 4 semanas a partir de la fecha de inicio
+
 with DAG(
     dag_id="fetch_temp_ls",
     description="Fetches Surface Temperature from the GEE API using Docker.",
-    start_date=datetime(2026, 1, 1),
+    start_date=START_VIERNES,
     end_date=datetime(2030, 1, 3),
     max_active_tasks=1,  # Limits this DAG to 1 parallel tasks
     max_active_runs=1,    # Limits to 1 active run at a time
     #schedule=CronDataIntervalTimetable("@monthly", "UTC"),
+    schedule=DELTA,
     catchup=True,
 ):
     fetch_temp_ls = DockerOperator(

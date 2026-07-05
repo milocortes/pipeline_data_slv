@@ -1,11 +1,14 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.sdk import DAG
 from airflow.timetables.interval import CronDataIntervalTimetable
 #from docker.types import Mount
 from utils import ENVS_VARS
+
+START_DOMINGO = datetime(2026, 7, 5) # Calendarizamos para que la DAG se ejecute todos los Miercoles
+DELTA = timedelta(weeks=2) # La DAG se ejecutará cada 4 semanas a partir de la fecha de inicio
 
 with DAG(
     dag_id="fetch_viirs_bm",
@@ -15,6 +18,7 @@ with DAG(
     max_active_tasks=1,  # Limits this DAG to 1 parallel tasks
     max_active_runs=1,    # Limits to 1 active run at a time
     #schedule=CronDataIntervalTimetable("@monthly", "UTC"),
+    schedule=DELTA,
     catchup=True,
 ):
     fetch_viirs_bm_departamentos = DockerOperator(
@@ -23,7 +27,7 @@ with DAG(
         command=[
             "uv", 
             "run", 
-            "tasks/viirs_bm_departamentos.py"
+            "tasks/viirs_bm.py"
         ],
         # Explicitly forward the variable here:
         environment={
