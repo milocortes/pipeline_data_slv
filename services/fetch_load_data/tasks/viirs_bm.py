@@ -31,7 +31,8 @@ bm_data = bm_extract(
     gdf, # this specifies the region of interest
     product_id= "VNP46A3", # this specifies the monthly luminosity data
     #date_range=pd.date_range(config["start_date"], pd.to_datetime('today'), freq="ME"), # this specifies the months
-    date_range=pd.date_range("2024-01-01", pd.to_datetime('today'), freq="ME"), # this specifies the months
+    #date_range=pd.date_range("2024-01-01", pd.to_datetime('today') - pd.DateOffset(months=1), freq="ME"), # this specifies the months
+    date_range=pd.date_range("2012-01-01", pd.to_datetime('today') - pd.DateOffset(months=1), freq="ME"), # this specifies the months
     token=bearer, # this is the API bearer for NASA LAADS DAAC from Step 3
     aggfunc = ["sum"],
     variable = "AllAngle_Composite_Snow_Free", # this selects the layer we're interested in ->

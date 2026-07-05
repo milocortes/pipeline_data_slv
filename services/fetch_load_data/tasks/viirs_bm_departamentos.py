@@ -31,7 +31,7 @@ gdf = gpd.read_file(
 ntl_df_year_sum = bm_extract(
     gdf,
     product_id= "VNP46A3", #"VNP46A4",
-    date_range=pd.date_range("2012-01-01", pd.to_datetime('today'), freq="QE"),
+    date_range=pd.date_range("2012-01-01", pd.to_datetime('today') - pd.DateOffset(months=1), freq="QE"),
     token=bearer,
     aggfunc = ["sum"],
     variable = "AllAngle_Composite_Snow_Free",
