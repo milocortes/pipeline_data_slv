@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import get_tokens, actualiza_token
+from utils import get_tokens, actualiza_token, actualiza_vigencia_token, verifica_vigencia_token
 
 # Store the initial value of widgets in session state
 if "visibility" not in st.session_state:
@@ -23,9 +23,13 @@ st.markdown(
     :red-badge[⚠️ NOTA: los tokens tienen una vigencia de 2 meses].
     """
 )
+st.markdown(
+    verifica_vigencia_token()
+)
 
 # Create a form container
 with st.form(key="viirs_input_form"):
+    ## Formulario que acepta el nuevo token
     new_token_viirs = st.text_input(
         "Agrega tu nuevo Token de VIIRS Black Marble aquí 👇",
         label_visibility=st.session_state.visibility,
@@ -33,14 +37,19 @@ with st.form(key="viirs_input_form"):
         placeholder="VIIRS Token",
     )
     
+    ## Formulario para la fecha límite de vigencia del token
+    vigencia_token = st.date_input("Fecha Límite de Vigencia del Token", value=None)
+    
+
     # Every form requires a submit button
     submitted_viirs = st.form_submit_button(label="Submit")
 
 # Execute actions only after the submit button is clicked
 if submitted_viirs:   
     actualiza_token("BLACKMARBLE", new_token_viirs)
+    actualiza_vigencia_token(vigencia_token)
     st.write(f"El nuevo token para VIIRS Black Marble es: :blue-badge[{new_token_viirs}]")
-
+    st.write("La fecha de vigencia del Token es : ", vigencia_token.strftime("%B %d, %Y"))
 
 st.markdown(
     """

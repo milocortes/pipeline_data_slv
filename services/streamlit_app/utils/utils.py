@@ -2,6 +2,7 @@ import polars as pl
 from polars import Datetime, Float64
 import streamlit as st
 from typing import Dict
+from datetime import datetime
 
 from deltalake import DeltaTable
 
@@ -571,3 +572,75 @@ def actualiza_token(
             storage_options=storage_options,
             mode = "overwrite"
         )
+
+
+def actualiza_vigencia_token(
+    vigencia_token : datetime.date
+    ) -> None:
+
+    ## Castea date to datetime
+    vigencia_token = datetime(vigencia_token.year, vigencia_token.month, vigencia_token.day)
+
+    ## Carga configuración general
+    config = build_general_config()
+
+    ## Carga Configuración de almacenamiento
+    storage_options = build_storage_config()
+
+    ## Ruta en Delta Lake de la tabla de Tokens
+    URL_DELTA_TABLE = f"s3://{config['BUCKET_NAME']}/vigencia_token"
+
+    # Crea el dataframe con las API Keys de FRED y BlackMarble
+    data = {
+            "vigencia" : [
+                    vigencia_token
+                ]
+            }
+    df_tokens = pl.DataFrame(data)
+
+    # Replace timezone-naive dates with UTC
+    df_tokens = df_tokens.with_columns(
+        pl.col("vigencia").dt.replace_time_zone("UTC")
+    )
+
+    ## Sobre escribimos la tabla den DeltaLake
+    df_tokens.write_delta(
+        URL_DELTA_TABLE,
+        storage_options=storage_options,
+        mode = "overwrite", 
+    )
+
+def verifica_vigencia_token() -> str:
+    ## Carga configuración general
+    config = build_general_config()
+
+    ## Carga Configuración de almacenamiento
+    storage_options = build_storage_config()
+
+    ## Ruta en Delta Lake de la tabla de Tokens
+    URL_DELTA_TABLE = f"s3://{config['BUCKET_NAME']}/vigencia_token"
+
+    ## Verifica si la Tabla existe:
+    if DeltaTable.is_deltatable(URL_DELTA_TABLE, storage_options=storage_options):
+
+        # Cargamos Tokens actuales
+        df_tokens = pl.read_delta(
+                URL_DELTA_TABLE,
+                storage_options=storage_options,
+            )
+
+        # Fecha de vigencia del token
+        vigencia_token = df_tokens["vigencia"][0]
+
+        ## Castea date to datetime
+        vigencia_token = datetime(vigencia_token.year, vigencia_token.month, vigencia_token.day)
+
+        # Verifica cuandos días hay de vigencia
+        dias_vigencia = int((vigencia_token - datetime.now()).days)
+
+        if dias_vigencia<=0:
+            return ":red-badge[⚠️ El Token ha caducado. Es necesario actualizarlo]"
+        else:
+            return f":blue-badge[Vigencia del Token Actual {vigencia_token.strftime("%B %d, %Y")}. Restan {dias_vigencia} dias de vigencia.]"
+    else:
+        return "No hay Token Disponible"

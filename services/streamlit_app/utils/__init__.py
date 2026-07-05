@@ -5,5 +5,7 @@ from .utils import (
     build_general_config, 
     build_storage_config, 
     get_tokens, 
-    actualiza_token
+    actualiza_token, 
+    actualiza_vigencia_token, 
+    verifica_vigencia_token
 )
