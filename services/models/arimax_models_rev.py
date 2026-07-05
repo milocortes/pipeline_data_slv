@@ -270,7 +270,7 @@ arimax_pronostico_nivel = pl.concat(
         predicciones_medias.select("Date", "prediccion_nivel").rename({"prediccion_nivel" : "media_prediccion_nivel"})
     ]
 ).unique(
-    keep='last' ### En caso de valor duplicado, nos quedamos con el último valor observado
+    subset=["Date"], keep='last' ### En caso de valor duplicado, nos quedamos con el último valor observado
 ).sort(
     by = "Date"
 )
@@ -319,7 +319,7 @@ arimax_pronostico_tc_interanual = pl.concat(
         predicciones_medias.select("Date", "prediccion_tc_interanual").rename({"prediccion_tc_interanual" : "media_prediccion_tc_interanual"})
     ]
 ).unique(
-    keep='last' ### En caso de valor duplicado, nos quedamos con el último valor observado
+    subset=["Date"], keep='last' ### En caso de valor duplicado, nos quedamos con el último valor observado
 ).sort(
     by = "Date"
 )
