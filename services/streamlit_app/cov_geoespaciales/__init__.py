@@ -4,6 +4,7 @@ from .geoespaciales import render_ndvi_gee
 from .geoespaciales import render_precip
 from .geoespaciales import render_temp_air
 from .geoespaciales import render_temp_ls
+from .geoespaciales import render_viirs_bm_sum
 
 
 
@@ -14,7 +15,8 @@ RENDER_GEOESPACIAL = {
     "Temperatura Superficie MODIS" : render_temp_ls, 
     "NDBI" : render_ndbi_gee, 
     "NDVI" : render_ndvi_gee, 
-    "Precipitación" : render_precip 
+    "Precipitación" : render_precip, 
+    "Luces Nocturnas VIIRS" : render_viirs_bm_sum
 }
 
 

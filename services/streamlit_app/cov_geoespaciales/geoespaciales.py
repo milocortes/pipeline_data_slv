@@ -38,3 +38,6 @@ def render_temp_air():
     
 def render_temp_ls():
     time_series_plot("temp_ls", metadata["temp_ls"], config, storage_options)
+
+def render_viirs_bm_sum():
+    time_series_plot("viirs_bm_sum", metadata["viirs_bm_sum"], config, storage_options)
