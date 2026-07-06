@@ -1,0 +1,6 @@
+Rol,Menú ,Notas
+Usuario Airflow,Dashboard de administración de Airflow,"Agrega, elimina, y verifica estatus de DAGs de Airflow"
+Usuario RustFS,Dashboard de administración de RustFS,"Crea, elimina y actualiza buckets y tablas en el almacenamiento de RustFS"
+Usuario Google Eart Engine,Dashboard de administración de RustFS,Habilita Cliente para la consulta via API de Google Earth Engine
+Usuario Google Sheets,Dashboard de GS,Habilita Cliente para la actualización y eliminación en Google Sheets
+Usuario Google Data Studio,Dashboard de Data Studio,Visualización y Administración del Dashboard de Data Studio

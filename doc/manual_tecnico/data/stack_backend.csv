@@ -1,0 +1,4 @@
+Módulo,Tecnología,API,Propósito
+ETL (Automatización y calendarización de consulta y carga de datos), Apache Airflow.,"APIs usadas: Cliente Google Earth Engine, Cliente de Google Sheets, FRED y Servicio BlackMarble VIIRS de NASA.",Calendarización de las  consultas  a  APIs  geoespaciales y administrativas
+Modelación y pronóstico,"Python (paqueterías standar de aprendizaje de máquina y modelación estadistica : sklearn, xgboost, statsmodels) y R (modelo subnacional)",Servicio REST de Apache Airflow para la ejecución del contenedor que entrena y pronostica.,Entrenamiento y pronóstico de modelos lineales y de aprendizaje de máquina
+Persistencia de datos,Delta Lake y RustFS,,Capa de persistencia de datos
