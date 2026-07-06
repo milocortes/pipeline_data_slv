@@ -59,7 +59,7 @@ viirs_bm_departamentos = viirs_bm_departamentos.rename({"date" : "datetime"})
 
 ### Guardamos datos en formato Delta Table en RustFS
 viirs_bm_departamentos.write_delta(
-    f"s3://{config['BUCKET_NAME']}/viirs_bm_departamentos",
+    f"s3://{config['BUCKET_NAME']}/viirs_bm_sum_departamento",
     storage_options=storage_options,
     mode = "overwrite"
 )
