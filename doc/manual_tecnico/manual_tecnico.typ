@@ -27,6 +27,7 @@ El sistema está constituido modularmente como un sistema de microservicios, los
 #let stack_frontend = csv("data/stack_frontend.csv")
 #let env = csv("data/env.csv")
 #let roles = csv("data/roles.csv")
+#let gid1_slv = csv("data/gid_1_SLV.csv")
 
 #table(
   columns: 2,
@@ -373,7 +374,32 @@ Las siguientes figuras muestran la configuración de descarga de cada una de las
 )
 
 ==== Consumo Electrico (En sus distintas categorías)
-Los datos de *Consumo Electrico (En sus distintas categorías), tanto Nacional como Subnacional* son compartidos internamente en formato Excel. Una vez que se encuentran disponibles, se suben al sistema.
+Los datos de *Consumo Electrico (En sus distintas categorías), tanto Nacional como Subnacional* son compartidos internamente en formato Excel. 
+
+Para el caso del *Consumo Electrico Nacional* los datos son compartidos en un formato relativamente estructurado, de manera que es posible subir el archivo con el formato original en excel y el sistema realiza el preprocesamiento necesario para cargarse en el formato adecuado.
+
+Sin embargo, para los datos *Consumo Electrico Subnacional*, la tabla no tiene un formato estructurado y no hay consistencia con los nombres de los departamentos. Por tal motivo, una vez el usuario tenga la información, este *deberá realizar un preprocesamiento previo de los datos de consumo eléctrico subnacional* con la finalidad de evitar problemas no previstos en la plataforma para su adecuada carga en la base de datos. 
+
+El usuario deberá subir a la plataforma un archivo csv el cual contendrá la tabla con la información subnacional con las siguientes columnas:
+- `datetime` : Columna con tipo de dato cadena de *texto* el cual indica el trimestre. Los trimestres siguen el siguiente formato : `[año]-01-01`,  `[año]-04-01`, `[año]-07-01` y `[año]-10-01` para hacer referencia al primer, segundo, tercero y cuarto trimestre, respectivamente. 
+- `GID_1` : Columna con tipo de dato cadena de *texto* que es un identificador alfanumérico único usado para para designar el límite administrativo subnacional principal de un país. Para los departamentos de El Salvador, contamos con los siguientes GID_1 , los cuales son los valores posibles que puede tomar la columna `GID_1`: 
+
+#table(
+  columns: 2,
+  // Use the first row as the header
+  table.header(..gid1_slv.at(0).map(name => [*#name*])),
+  // Use everything after the first row as body data
+  ..gid1_slv.slice(1).flatten()
+)
+
+- `electricidad_departamento` : Columna con tipo de dato Flotante que contiene el consumo de energía eléctrica *en escala logarítmica*.
+
+La siguiente figura muestra un ejemplo del formato que debe tener el archivo csv:
+
+#figure(
+  image("images/formato_electricidad_subnacional.png", width: 100%),
+  caption: [Formato del archivo csv del consumo de energía eléctrica subnacional],
+)
 
 === Geoespaciales 
 Las covariables geoespaciales se actualizan periódicamente mediante las APIs de Google Earth Engine y VIIRS BlackMarble de acuerdo a la política de calendarización definida en las DAGs de Apache Airflow. 
