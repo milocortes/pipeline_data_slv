@@ -480,8 +480,33 @@ def time_series_plot_subnacional(ts_var : str,
         """
     )
 
-    if ts_var in ["electricidad_departamento", "gdp_us_corriente"]:
-        st.warning('Aquí se agregará método para cargar la tabla', icon="⚠️")
+    if ts_var in ["electricidad_departamento"]:
+        #st.warning('Aquí se agregará método para cargar la tabla', icon="⚠️")
+        if "upload_key" not in st.session_state:
+            st.session_state["upload_key"] = 0
+
+        uploaded_file = st.file_uploader("**Sube los datos**", key=st.session_state["upload_key"], type=["csv"])
+
+        if uploaded_file !=None:
+            ### Cargamos y guardamos en Delta Lake el archivo suministrado por el usuario
+            ## Cargamos datos suministrados por el usuario
+            electricidad_departamento = pl.read_csv(uploaded_file)
+            
+            ## Casteamos fechas en String a datetime
+            electricidad_departamento = electricidad_departamento.with_columns(
+                    pl.col("datetime").str.to_datetime()
+                )
+
+            ## Guardamos DataFrame en RustFS
+            electricidad_departamento.write_delta(
+                        f"s3://{config['BUCKET_NAME']}/{ts_var}",
+                        storage_options=storage_config,
+                        mode = "overwrite"
+                    )
+
+            st.session_state["upload_key"] += 1
+            ### Booteamos la aplicación para cargar los datos recientemente actualizados
+            st.rerun()
 
 #############################################
 ### - ACTUALIZACIÓN DE TOKENS ------------- #

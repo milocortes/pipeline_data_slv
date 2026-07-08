@@ -7,7 +7,7 @@ import requests
 from datetime import datetime
 
 ## Rutina para evaluar si se tienen todas las covariables disponibles
-from models import get_available_cov_ml
+from models import get_available_cov_subnacional
 
 ## Carga variables de entorno 
 AIRFLOW_APISERVER_DOMAIN = os.getenv("AIRFLOW_APISERVER_DOMAIN")
@@ -17,7 +17,7 @@ _AIRFLOW_WWW_USER_USERNAME = os.getenv("_AIRFLOW_WWW_USER_USERNAME")
 
 st.title("Estimación PIB Subnacional con Modelo Panel Dinámico Bayesiano")
 
-test_disponibilidad = get_available_cov_ml()
+test_disponibilidad = get_available_cov_subnacional()
 
 # 1. Define your Markdown template with Jinja2 placeholders
 template_disponibilidad = """

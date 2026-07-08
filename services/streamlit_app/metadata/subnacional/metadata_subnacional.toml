@@ -15,7 +15,7 @@ frecuencia_actualizacion_delta = "Indefinido"
 rezago_fecha_actual = ""
 
 [viirs_bm_sum_departamento]
-variable = "VIIRS Black Marble"
+variable = "Luces Nocturnas VIIRS Black Marble a Nivel Departamental"
 descripcion = "Luces Nocturnas VIIRS Black Marble"
 fuente = "https://viirsland-gsfc-nasa-gov.translate.goog/Products/NASA/BlackMarble.html?_x_tr_sl=en&_x_tr_tl=es&_x_tr_hl=es&_x_tr_pto=tc"
 frecuencia_actualizacion = "Mensual"
