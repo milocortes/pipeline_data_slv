@@ -30,6 +30,9 @@ Se agregó una nueva opción a la barra de navegación donde se agregaron los re
 == Cambio US\$ por USD
 En el apartado de la estimación subnacional, se realizó el cambio de texto de US\$ por USD.
 
+== Tablero subnacional : Cambio al PIB Corriente Nacional
+Se indica que el PIB Corriente Nacional corresponde a su valor trimestral. Por caracter informativo, no se sugiere presentar el valor trimestral acumulado.
+
 == Ajuste de color de texto en descripción de variables
 Se modificó el color de fuente en la descripción de variables del modelol 5.
 
@@ -38,3 +41,10 @@ Se eliminó la descripción de la variable FRED PIB trimestral de EEUU por dupli
 
 == Agregar fuente de datos para la estimación subnacional
 Se agregaron las fuentes de datos utilizadas en la estimación así como la referencia al artículo *Downscaled gridded global dataset for gross domestic product (GDP) per capita PPP over 1990–2022*
+
+== Bucket de respaldo de información de los pronóstico
+Se agregó un Bucket en el almacenamiento de objetos de RustFS para contar con un respaldo de los pronósticos de los modelos. Esto con el objetivo de mantener la integridad de los resultados de los pronósticos en caso de existencia de algún evento de corrupción de información.
+
+Se agregó una DAG la cual restaura la información de los últimos pronóstico calculados al Google Sheets que alimenta el Dashboard de visualización de Looker Studio.
+
+== 

@@ -556,6 +556,33 @@ Para flujos de trabajo automatizados, servidores o entornos de computación en l
 3. Utiliza el archivo de clave: en tu script de Python, emplea el siguiente código, sustituyendo `my-service-account@...gserviceaccount.com` y `.private-key.json` por tus propios datos:
 
 == Respaldos de Información
-=== Compute Engine instant snapshots
+=== Compute Engine Instant Snapshots
+
+La política de respaldo de la Instancia de Google Compute Engine donde se albergue la aplicación es responsabilidad del área de TI.
+
+Se recomienda el uso de * Instant Snapshot*.
+
+Una Instant Snapshot es una copia de seguridad local de un disco que se puede usar para crear rápidamente un disco nuevo en minutos.
+
+Las Instant Snapshots capturan datos en un momento específico. Están optimizadas para restablecer con rapidez los datos capturados en un disco nuevo. Usa instantáneas inmediatas para recuperar datos con rapidez en casos en los que la zona y el disco aún están intactos, pero los datos en el disco se pierden o se dañan, como los siguientes:
+
+- Error del usuario
+- Actualizaciones de software con errores
+- Fallas a nivel de aplicación
+
+Las Instant Snapshots son incrementales y pueden ser más rentables que usar varias clonaciones de disco.
+
+Se sugiere visitar el siguiente sitio para mayor información:
+
 https://cloud.google.com/blog/products/compute/introducing-compute-engine-instant-snapshots
+
+
 === Bucket `respaldo`
+Se agregó un Bucket en el almacenamiento de objetos de RustFS para contar con un respaldo de los pronósticos de los modelos. Esto con el objetivo de mantener la integridad de los resultados de los pronósticos en caso de existencia de algún evento de corrupción de información.
+
+Se agregó una DAG la cual restaura la información de los últimos pronóstico calculados al Google Sheets que alimenta el Dashboard de visualización de Looker Studio.
+
+#figure(
+  image("images/respaldo_pronosticos.png", width: 100%),
+  caption: [Respaldo de Pronósticos],
+)
