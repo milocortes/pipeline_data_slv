@@ -318,12 +318,12 @@ bash stop_docker_compose_dev.sh
 El Bucket `respaldo` mantiene un respaldo de las tablas que se encuentran en el Google Sheets que alimenta las visualizaciones de Looker Studio.
 
 #figure(
-  image("images/crea_bucket_1.jpeg", width: 100%),
+  image("images/crea_bucket_respaldo_1.jpeg", width: 100%),
   caption: [Creación de Bucket `respaldo`],
 )
 
 #figure(
-  image("images/crea_bucket_2.jpeg", width: 100%),
+  image("images/crea_bucket_respaldo_2.jpeg", width: 100%),
   caption: [Creación de Bucket `respaldo`],
 )
 

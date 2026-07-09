@@ -16,6 +16,15 @@ import time
 import os 
 import socket
 
+## Paquetes para desencadenar la DAG con Airflow REST API
+import requests
+
+## Carga variables de entorno 
+AIRFLOW_APISERVER_DOMAIN = os.getenv("AIRFLOW_APISERVER_DOMAIN")
+AIRFLOW_APISERVER_PORT = os.getenv("AIRFLOW_APISERVER_PORT")
+_AIRFLOW_WWW_USER_PASSWORD = os.getenv("_AIRFLOW_WWW_USER_PASSWORD")
+_AIRFLOW_WWW_USER_USERNAME = os.getenv("_AIRFLOW_WWW_USER_USERNAME")
+
 ## Función de construye el AWS_ENDPOINT_URL a partir del DNS del servidor y el puerto
 def build_aws_endpoint_url() -> str :
 
@@ -306,6 +315,11 @@ def transforma_and_load_bc( ts_var : str,
         storage_options=storage_config,
         mode = "overwrite"
     )
+
+    ### Si la variable a actualizar es el IVE, necesitamos actualizar los valores en Google Sheets
+    ### por lo que tenemos que ejecutar la DAG `actualiza_ive.py`
+    if ts_var == "indice_vol_encad":
+        actualiza_ive()
 
     ### Mensaje de acción exitosa
     st.success('La tabla se actualizó exitosamente', icon="✅")
@@ -670,3 +684,39 @@ def verifica_vigencia_token() -> str:
             return f":blue-badge[Vigencia del Token Actual {vigencia_token.strftime("%B %d, %Y")}. Restan {dias_vigencia} dias de vigencia.]"
     else:
         return "No hay Token Disponible"
+
+## Función que actualiza los valores observados del ultimo trimestre disponible del IVE
+def actualiza_ive() -> None:
+    ## Esta información debe ir en un archivo de configuración. Por el momento quedará hardcodeado
+    url = f"{AIRFLOW_APISERVER_DOMAIN}:{AIRFLOW_APISERVER_PORT}/api/v2/dags/actualiza_ive/dagRuns"
+    url_token = f"{AIRFLOW_APISERVER_DOMAIN}:{AIRFLOW_APISERVER_PORT}/auth/token"
+
+    headers_token = {
+        "Content-Type" : "application/json"
+    }
+
+    data_token = {
+        "username": _AIRFLOW_WWW_USER_USERNAME,
+        "password": _AIRFLOW_WWW_USER_PASSWORD
+    }
+
+    response_token = requests.post(url_token, headers=headers_token, json=data_token)
+
+    token = response_token.json()["access_token"] 
+
+    headers = {
+        "Authorization" : f"Bearer {token}",
+        "Content-Type" : "application/json"
+    }
+
+    data = {
+        "logical_date" : datetime.now().astimezone().isoformat()
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        st.success("DAG Triggered Successfully")
+    else:
+        st.error(f"Failed: {response.text}")
+
