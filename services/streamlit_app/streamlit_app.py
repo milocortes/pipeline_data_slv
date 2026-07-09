@@ -20,6 +20,7 @@ pg = st.navigation(
         st.Page("pages/subnacional_covariables.py", title="Covariables Subnacional", icon=":material/code:"),
         st.Page("pages/forecast_subnacional.py", title="Estimación Subnacional", icon="🌍"),
         st.Page("pages/actualiza_tokens.py", title = "Actualización de Tokens", icon = "🔑"),
+        st.Page("pages/envia_respaldos.py", title = "Respaldo de Pronósticos", icon = ":material/security:")
 
     ]
 )

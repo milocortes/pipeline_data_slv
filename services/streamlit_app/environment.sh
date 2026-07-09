@@ -3,6 +3,7 @@
 export start_date="2012-01-01"
 export LSIB="FAO/GAUL/2015/level0"
 export BUCKET_NAME="pronostico"
+export BUCKET_RESPALDO="respaldo"
 #export BUCKET_NAME="pronostico-pib-geoespacial-slv"
 export service_account_gee="geoespacial@pib-geoespacial.iam.gserviceaccount.com"
 export gee_project="pib-geoespacial"

@@ -28,5 +28,6 @@ RUN apt install -y libgfortran5
 COPY ./services/models/arimax_models_rev.py /arimax_models_rev.py
 COPY ./services/models/ml_models.py /ml_models.py
 COPY ./services/models/crea_tablas.py /crea_tablas.py
+COPY ./services/models/envia_respaldo_gs.py /envia_respaldo_gs.py
 
 RUN uv sync

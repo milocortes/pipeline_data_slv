@@ -20,6 +20,7 @@ def build_general_config() -> Dict[str,str]:
         "start_date" : os.getenv("start_date"), 
         "LSIB" : os.getenv("LSIB"), 
         "BUCKET_NAME" : os.getenv("BUCKET_NAME"), 
+        "BUCKET_RESPALDO" : os.getenv("BUCKET_RESPALDO"), 
         "service_account_gee" : os.getenv("service_account_gee"), 
         "gee_project" : os.getenv("gee_project")
     }
@@ -153,3 +154,21 @@ def get_SHAP(
 
     return df_SHAP
     
+#### Lista que almacena todas las tablas de Google Sheets
+ALL_TABLES_GS = [
+    'media-pronosticos-modelos-lineales', 
+    'pronosticos-modelos-lineales', 
+    'nivel-historico-media-pronostico-modelos-lineales', 
+    'tc-interanual-historico-pronostico-modelos-lineal', 
+    'valores-obs-vs-pronostico-nivel-modelos-lineales', 
+    'valores-obs-vs-pronostico-tc-anual-mod-lineales', 
+    'info-tabla-contribucion-variables-modelos-lineales', 
+    'pronosticos-modelos-ml', 
+    'nivel-historico-pronostico-modelos-ml', 
+    'tc-interanual-historico-pronostico-modelos-ml', 
+    'pib-corriente-variacion', 
+    'subnacional-desagregacion', 
+    'subnacional-departamentos', 
+    'nivel-subnacional-departamentos', 
+    'tc-interanual-subnacional-departamentos'
+]

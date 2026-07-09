@@ -236,8 +236,19 @@ outputs_tables = {
     "tc-interanual-subnacional-departamentos" : ajusta_df(subnacional_departamentos_departamentos)
 }
 
+#### Guarda respaldo de los pronósticos en el Bucket `respaldo`
+console.print("3.-", "Guardamos Tablas en el Bucket `respaldo`", style="bold red")
+
+for tabla,datos in outputs_tables.items():
+    
+    pl.from_pandas(datos.replace("",np.nan)).write_delta(
+        f"s3://{config['BUCKET_RESPALDO']}/{tabla}",
+        storage_options=storage_options,
+        mode = "overwrite"
+    )
+
 #### Exportamos tablas a GS
-console.print("3.-", "Exportamos Tablas a GS", style="bold red")
+console.print("4.-", "Exportamos Tablas a GS", style="bold red")
 
 for sheet_name, worksheet in worksheets.items():
     # Upload data (headers + values)

@@ -38,7 +38,7 @@ El sistema está constituido modularmente como un sistema de microservicios, los
 )
 
 = Stack tecnológico
-== Backend 
+== Backend
 #table(
   columns: 4,
   // Use the first row as the header
@@ -66,154 +66,154 @@ El sistema está constituido modularmente como un sistema de microservicios, los
 
 = Estructura del repositorio
 #show raw: r => {
-      set text(size: 8pt)
-      r
-    }
+  set text(size: 8pt)
+  r
+}
 
 #text(size: 5pt)[
-```
-├── dags ## Directorio donde se encuentran las tareas calendarizadas
-│   ├── crea_tablas.py
-│   ├── pronostico_modelos_lineales.py
-│   ├── pronosticos_modelos_ml.py
-│   ├── pronostico_subnacional.py
-│   ├── test.py
-│   └── utils.py
-├── docker-compose-dev.yml
-├── docker-compose.yml
-├── official-airflow-docker-compose.yml
-├── pyproject.toml
-├── README.md
-├── services ## Directorio de los microservicios
-│   ├── fetch_load_data ## Tareas de consultas a APIs geoespaciales y administrativas
-│   │   ├── blackmarblepy_dist
-│   │   │   └── blackmarblepy-2025.11.3.dev1+gc53615384.d20260516-py3-none-any.whl
-│   │   ├── config
-│   │   │   ├── general
-│   │   │   │   └── config.toml
-│   │   │   └── storage
-│   │   │       └── storage_config.toml
-│   │   ├── Dockerfile
-│   │   ├── environment.sh
-│   │   ├── geojson
-│   │   │   ├── gadm41_SLV_0.geojson
-│   │   │   └── gadm41_SLV_1.geojson
-│   │   ├── pyproject.toml
-│   │   ├── README.md
-│   │   ├── tasks
-│   │   │   ├── consumo_elect.py
-│   │   │   ├── disaster_occurrence.py
-│   │   │   ├── dmsp_csm_sum.py
-│   │   │   ├── evi_gee.py
-│   │   │   ├── export_usd_fob.py
-│   │   │   ├── gdp_us_const_trim.py
-│   │   │   ├── gee
-│   │   │   │   └── gee_functions.py
-│   │   │   ├── import_usd_cif.py
-│   │   │   ├── ndbi_gee.py
-│   │   │   ├── ndvi_gee.py
-│   │   │   ├── ndvi_wfp.py
-│   │   │   ├── precip.py
-│   │   │   ├── remesas_usd_trim.py
-│   │   │   ├── temp_air.py
-│   │   │   ├── temp_ls.py
-│   │   │   ├── viirs_bm_departamentos.py
-│   │   │   └── viirs_bm.py
-│   │   ├── utils
-│   │   │   ├── __init__.py
-│   │   │   └── utils.py
-│   │   └── uv.lock
-│   ├── models ## Microservicio de Entrenamiento y Pronóstico de modelos lineales y de ML
-│   │   ├── arimax_models.py
-│   │   ├── arimax_models_rev.py
-│   │   ├── crea_tablas.py
-│   │   ├── Dockerfile
-│   │   ├── Dockerfile-compose-dev
-│   │   ├── environment.sh
-│   │   ├── ml_models.py
-│   │   ├── populate_pronosticos.py
-│   │   ├── pyproject.toml
-│   │   ├── README.md
-│   │   ├── utils
-│   │   │   ├── __init__.py
-│   │   │   └── utils.py
-│   │   ├── uv.lock
-│   │   └── x13as
-│   ├── streamlit_app ## Microservicio de Dashboard de administración
-│   │   ├── cov_administrativas
-│   │   │   ├── administrativas.py
-│   │   │   └── __init__.py
-│   │   ├── cov_geoespaciales
-│   │   │   ├── geoespaciales.py
-│   │   │   └── __init__.py
-│   │   ├── cov_subnacional
-│   │   │   ├── __init__.py
-│   │   │   └── subnacional.py
-│   │   ├── Dockerfile
-│   │   ├── Dockerfile-compose-dev
-│   │   ├── environment.sh
-│   │   ├── metadata
-│   │   │   ├── admin
-│   │   │   │   └── metadata_admin.toml
-│   │   │   ├── geoespacial
-│   │   │   │   └── metadata_geoespacial.toml
-│   │   │   └── subnacional
-│   │   │       └── metadata_subnacional.toml
-│   │   ├── models
-│   │   │   ├── __init__.py
-│   │   │   └── models.py
-│   │   ├── pages
-│   │   │   ├── actualiza_tokens.py
-│   │   │   ├── covariables.py
-│   │   │   ├── forecast_arimax.py
-│   │   │   ├── forecast_ml.py
-│   │   │   ├── forecast_subnacional.py
-│   │   │   ├── __init__.py
-│   │   │   ├── showcase.py
-│   │   │   └── subnacional_covariables.py
-│   │   ├── pyproject.toml
-│   │   ├── README.md
-│   │   ├── streamlit_app.py
-│   │   └── utils
-│   │       ├── __init__.py
-│   │       └── utils.py
-│   └── subnacional ## Microservicio de Entrenamiento y Pronóstico del modelo subnacional
-│       ├── bpvars.R
-│       ├── crea_pdata_bpvar.py
-│       ├── crea_tablas_raw.py
-│       ├── datos
-│       │   ├── electricidad_departamento.csv
-│       │   ├── gdp_ppp_departamento.csv
-│       │   ├── poblacion_departamento.csv
-│       │   ├── raw
-│       │   │   ├── panel_data_subnacional_forecast.xlsx
-│       │   │   └── panel_data_subnacional.xlsx
-│       │   └── viirs_bm_sum_departamento.csv
-│       ├── Dockerfile
-│       ├── Dockerfile-compose-dev
-│       ├── envia_delta_lake.py
-│       ├── envia_gs.py
-│       ├── environment.sh
-│       ├── pyproject.toml
-│       ├── R_config.R
-│       ├── README.md
-│       ├── run_subnacional.sh
-│       ├── utils
-│       │   ├── __init__.py
-│       │   └── utils.py
-│       └── uv.lock
-├── services-docker-compose-dev.yml
-├── services-docker-compose.yml
-└── uv.lock
-```
+  ```
+  ├── dags ## Directorio donde se encuentran las tareas calendarizadas
+  │   ├── crea_tablas.py
+  │   ├── pronostico_modelos_lineales.py
+  │   ├── pronosticos_modelos_ml.py
+  │   ├── pronostico_subnacional.py
+  │   ├── test.py
+  │   └── utils.py
+  ├── docker-compose-dev.yml
+  ├── docker-compose.yml
+  ├── official-airflow-docker-compose.yml
+  ├── pyproject.toml
+  ├── README.md
+  ├── services ## Directorio de los microservicios
+  │   ├── fetch_load_data ## Tareas de consultas a APIs geoespaciales y administrativas
+  │   │   ├── blackmarblepy_dist
+  │   │   │   └── blackmarblepy-2025.11.3.dev1+gc53615384.d20260516-py3-none-any.whl
+  │   │   ├── config
+  │   │   │   ├── general
+  │   │   │   │   └── config.toml
+  │   │   │   └── storage
+  │   │   │       └── storage_config.toml
+  │   │   ├── Dockerfile
+  │   │   ├── environment.sh
+  │   │   ├── geojson
+  │   │   │   ├── gadm41_SLV_0.geojson
+  │   │   │   └── gadm41_SLV_1.geojson
+  │   │   ├── pyproject.toml
+  │   │   ├── README.md
+  │   │   ├── tasks
+  │   │   │   ├── consumo_elect.py
+  │   │   │   ├── disaster_occurrence.py
+  │   │   │   ├── dmsp_csm_sum.py
+  │   │   │   ├── evi_gee.py
+  │   │   │   ├── export_usd_fob.py
+  │   │   │   ├── gdp_us_const_trim.py
+  │   │   │   ├── gee
+  │   │   │   │   └── gee_functions.py
+  │   │   │   ├── import_usd_cif.py
+  │   │   │   ├── ndbi_gee.py
+  │   │   │   ├── ndvi_gee.py
+  │   │   │   ├── ndvi_wfp.py
+  │   │   │   ├── precip.py
+  │   │   │   ├── remesas_usd_trim.py
+  │   │   │   ├── temp_air.py
+  │   │   │   ├── temp_ls.py
+  │   │   │   ├── viirs_bm_departamentos.py
+  │   │   │   └── viirs_bm.py
+  │   │   ├── utils
+  │   │   │   ├── __init__.py
+  │   │   │   └── utils.py
+  │   │   └── uv.lock
+  │   ├── models ## Microservicio de Entrenamiento y Pronóstico de modelos lineales y de ML
+  │   │   ├── arimax_models.py
+  │   │   ├── arimax_models_rev.py
+  │   │   ├── crea_tablas.py
+  │   │   ├── Dockerfile
+  │   │   ├── Dockerfile-compose-dev
+  │   │   ├── environment.sh
+  │   │   ├── ml_models.py
+  │   │   ├── populate_pronosticos.py
+  │   │   ├── pyproject.toml
+  │   │   ├── README.md
+  │   │   ├── utils
+  │   │   │   ├── __init__.py
+  │   │   │   └── utils.py
+  │   │   ├── uv.lock
+  │   │   └── x13as
+  │   ├── streamlit_app ## Microservicio de Dashboard de administración
+  │   │   ├── cov_administrativas
+  │   │   │   ├── administrativas.py
+  │   │   │   └── __init__.py
+  │   │   ├── cov_geoespaciales
+  │   │   │   ├── geoespaciales.py
+  │   │   │   └── __init__.py
+  │   │   ├── cov_subnacional
+  │   │   │   ├── __init__.py
+  │   │   │   └── subnacional.py
+  │   │   ├── Dockerfile
+  │   │   ├── Dockerfile-compose-dev
+  │   │   ├── environment.sh
+  │   │   ├── metadata
+  │   │   │   ├── admin
+  │   │   │   │   └── metadata_admin.toml
+  │   │   │   ├── geoespacial
+  │   │   │   │   └── metadata_geoespacial.toml
+  │   │   │   └── subnacional
+  │   │   │       └── metadata_subnacional.toml
+  │   │   ├── models
+  │   │   │   ├── __init__.py
+  │   │   │   └── models.py
+  │   │   ├── pages
+  │   │   │   ├── actualiza_tokens.py
+  │   │   │   ├── covariables.py
+  │   │   │   ├── forecast_arimax.py
+  │   │   │   ├── forecast_ml.py
+  │   │   │   ├── forecast_subnacional.py
+  │   │   │   ├── __init__.py
+  │   │   │   ├── showcase.py
+  │   │   │   └── subnacional_covariables.py
+  │   │   ├── pyproject.toml
+  │   │   ├── README.md
+  │   │   ├── streamlit_app.py
+  │   │   └── utils
+  │   │       ├── __init__.py
+  │   │       └── utils.py
+  │   └── subnacional ## Microservicio de Entrenamiento y Pronóstico del modelo subnacional
+  │       ├── bpvars.R
+  │       ├── crea_pdata_bpvar.py
+  │       ├── crea_tablas_raw.py
+  │       ├── datos
+  │       │   ├── electricidad_departamento.csv
+  │       │   ├── gdp_ppp_departamento.csv
+  │       │   ├── poblacion_departamento.csv
+  │       │   ├── raw
+  │       │   │   ├── panel_data_subnacional_forecast.xlsx
+  │       │   │   └── panel_data_subnacional.xlsx
+  │       │   └── viirs_bm_sum_departamento.csv
+  │       ├── Dockerfile
+  │       ├── Dockerfile-compose-dev
+  │       ├── envia_delta_lake.py
+  │       ├── envia_gs.py
+  │       ├── environment.sh
+  │       ├── pyproject.toml
+  │       ├── R_config.R
+  │       ├── README.md
+  │       ├── run_subnacional.sh
+  │       ├── utils
+  │       │   ├── __init__.py
+  │       │   └── utils.py
+  │       └── uv.lock
+  ├── services-docker-compose-dev.yml
+  ├── services-docker-compose.yml
+  └── uv.lock
+  ```
 ]
 
 = Requisitos previos
 - Instalación previa de Docker y Docker Compose.
-- Preferentemente levantar los servicios en Linux. En caso que se use Windows, es necesario modificar el volumen de RustFS a un directorio permitido por Windows. Es necesario modificar la línea 12 del archivo `services-docker-compose-dev.yml` para definir una ruta adecuada para Windows *e.g* `  C:\data:/data`. 
+- Preferentemente levantar los servicios en Linux. En caso que se use Windows, es necesario modificar el volumen de RustFS a un directorio permitido por Windows. Es necesario modificar la línea 12 del archivo `services-docker-compose-dev.yml` para definir una ruta adecuada para Windows *e.g* `  C:\data:/data`.
 
 
-= Configuración 
+= Configuración
 == Configuración Local <config_local>
 
 
@@ -236,16 +236,16 @@ git clone https://github.com/milocortes/pipeline_data_slv.git
 )[
   *Nota:* En caso de no tener instalado Git, realizar la instalación con la instrucción:
 
-```terminal
-sudo apt update
-sudo apt install git -y
-```
+  ```terminal
+  sudo apt update
+  sudo apt install git -y
+  ```
 
 ]
 
 
 
-- 2. Instalación de paquetería y configuración previa. 
+- 2. Instalación de paquetería y configuración previa.
 Ejecutamos el archivo `initial_config.sh`. El programa Docker y realiza la configuración de RustFS (crea directorios y asegura que el puerto 9000 esté abierto para accesos externos):
 
 ```terminal
@@ -271,12 +271,12 @@ bash deploy_docker_compose_dev.sh
 )[
   *Nota:* Se asume que se ha realizado los pasos de postinstalación de Docker Engine en Linux para manejar Docker como un usuario no-root.
 
-  En caso contrario, seguir la siguientes instruccioes en esta  #link("https://github.com/milocortes/pipeline_data_slv/issues/3")[página]. 
+  En caso contrario, seguir la siguientes instruccioes en esta  #link("https://github.com/milocortes/pipeline_data_slv/issues/3")[página].
 ]
 - 4. Espere unos segundos y debería poder acceder a los servicios siguientes servicios:
   - Servicio de Apache Airflow
   - Servicio de Almacenamiento de RustFS
-  - Dashboard de administración de Streamlit 
+  - Dashboard de administración de Streamlit
 
 Docker compose inicia servicios adicionales para el funcionamiento de Airlfow, como se muestra en la siguiente figura:
 
@@ -289,9 +289,9 @@ Docker compose inicia servicios adicionales para el funcionamiento de Airlfow, c
 
 Este código expone los siguientes servicios en `localhost:[puerto]`, con `[nombre de usuario]`/`[contraseña]` indicados entre paréntesis:
 
-  - 8080-Aiflow (`airflow`/`airflow`)
-  - 9001-RustFS (`rustfsadmin`/`rustfsadmin`)
-  - 8502-Dashboard de administración de Streamlit (no requiere usuario ni contraseña)
+- 8080-Aiflow (`airflow`/`airflow`)
+- 9001-RustFS (`rustfsadmin`/`rustfsadmin`)
+- 8502-Dashboard de administración de Streamlit (no requiere usuario ni contraseña)
 
 - 5. Para detener los contenedores en ejecución, ejecute el siguiente comando:
 
@@ -300,7 +300,9 @@ bash stop_docker_compose_dev.sh
 ```
 
 == Configuración Inicial del Entorno
-- 1. Entra al servicio de RustFS `0.0.0.0:9001` y crea el Bucket `pronostico`
+- 1.
+  - 1.1.- Creación de Bucket `pronostico`
+  Entra al servicio de RustFS `0.0.0.0:9001` y crea el Bucket `pronostico`. En este Bucket se guardarán las covariables, el IVE y el PIB Corriente, pronósticos parciales, etc.
 
 #figure(
   image("images/crea_bucket_1.jpeg", width: 100%),
@@ -312,6 +314,19 @@ bash stop_docker_compose_dev.sh
   caption: [Creación de Bucket `pronostico`],
 )
 
+- 1.2.- Creación de Bucket `respaldo`
+El Bucket `respaldo` mantiene un respaldo de las tablas que se encuentran en el Google Sheets que alimenta las visualizaciones de Looker Studio.
+
+#figure(
+  image("images/crea_bucket_1.jpeg", width: 100%),
+  caption: [Creación de Bucket `respaldo`],
+)
+
+#figure(
+  image("images/crea_bucket_2.jpeg", width: 100%),
+  caption: [Creación de Bucket `respaldo`],
+)
+
 - 2. Entra al servicio de Apache Airflow `0.0.0.0:8080` y ejecuta la DAG `crea_tablas` para inicializar las Tablas de covariables y pronósticos previos.
 
 #figure(
@@ -319,7 +334,7 @@ bash stop_docker_compose_dev.sh
   caption: [Creación de Tablas],
 )
 
-- 3. Ir al Dashboard de administración de Streamlit y dar click en la opción de navegación de Actualización de Tokens. Es necesario actualizar los Tokens para los servicios de API de FRED y VIIRS BlackMarble de la NASA. Se espera que eventualmente el administrador del sistema genere sus propios tokens. 
+- 3. Ir al Dashboard de administración de Streamlit y dar click en la opción de navegación de Actualización de Tokens. Es necesario actualizar los Tokens para los servicios de API de FRED y VIIRS BlackMarble de la NASA. Se espera que eventualmente el administrador del sistema genere sus propios tokens.
 
 #figure(
   image("images/sube_tokens.jpeg", width: 100%),
@@ -331,11 +346,11 @@ Por el momento, se comparten los Tokens usados para el desarrollo de la aplicaci
 - FRED:
   - Token : ``
 - VIIRS BlackMarble:
-  - Token : #text(size: 3pt)[] 
+  - Token : #text(size: 3pt)[]
   - Fecha de Vigencia del Token: 3 de Septiembre de 2026.
 
-== Actualización de Covariables 
-=== Administrativas 
+== Actualización de Covariables
+=== Administrativas
 No se cuenta con una API para la consulta de datos de las siguientes covariables:
 - Indice de Volumen Encadenado
 - Exportaciones
@@ -344,7 +359,7 @@ No se cuenta con una API para la consulta de datos de las siguientes covariables
 - Consumo Electrico (En sus distintas categorías)
 - Producto Interno Bruto Trimestral (PIB T). Producción y gasto a precios corrientes
 
-En consecuencia, el proceso de actualización de información de estas variables debe ser manual mediante el acceso al sitio del Banco de la República (a excepción del Consumo Eléctrico), descarga manual del archivo en formato CSV (a excepción del Consumo Eléctrico el cual es compartido en formato Excel). En todos los casos (a excepción del Consumo Eléctrico), el usuario debe filtrar por el primer registro de 2012 hasta el último registro disponible y subirlo al sistema. 
+En consecuencia, el proceso de actualización de información de estas variables debe ser manual mediante el acceso al sitio del Banco de la República (a excepción del Consumo Eléctrico), descarga manual del archivo en formato CSV (a excepción del Consumo Eléctrico el cual es compartido en formato Excel). En todos los casos (a excepción del Consumo Eléctrico), el usuario debe filtrar por el primer registro de 2012 hasta el último registro disponible y subirlo al sistema.
 
 Las siguientes figuras muestran la configuración de descarga de cada una de las covariables descargadas del sitio del Banco de la República.
 
@@ -374,22 +389,22 @@ Las siguientes figuras muestran la configuración de descarga de cada una de las
 )
 
 ==== Consumo Electrico (En sus distintas categorías)
-Los datos de *Consumo Electrico (En sus distintas categorías), tanto Nacional como Subnacional* son compartidos internamente en formato Excel. 
+Los datos de *Consumo Electrico (En sus distintas categorías), tanto Nacional como Subnacional* son compartidos internamente en formato Excel.
 
 Para el caso del *Consumo Electrico Nacional* los datos son compartidos en un formato relativamente estructurado, de manera que es posible subir el archivo con el formato original en excel y el sistema realiza el preprocesamiento necesario para cargarse en el formato adecuado.
 
-Sin embargo, para los datos *Consumo Electrico Subnacional*, la tabla no tiene un formato estructurado y no hay consistencia con los nombres de los departamentos. Por tal motivo, una vez el usuario tenga la información, este *deberá realizar un preprocesamiento previo de los datos de consumo eléctrico subnacional* con la finalidad de evitar problemas no previstos en la plataforma para su adecuada carga en la base de datos. 
+Sin embargo, para los datos *Consumo Electrico Subnacional*, la tabla no tiene un formato estructurado y no hay consistencia con los nombres de los departamentos. Por tal motivo, una vez el usuario tenga la información, este *deberá realizar un preprocesamiento previo de los datos de consumo eléctrico subnacional* con la finalidad de evitar problemas no previstos en la plataforma para su adecuada carga en la base de datos.
 
 El usuario deberá subir a la plataforma un archivo csv el cual contendrá la tabla con la información subnacional con las siguientes columnas:
-- `datetime` : Columna con tipo de dato cadena de *texto* el cual indica el trimestre. Los trimestres siguen el siguiente formato : `[año]-01-01`,  `[año]-04-01`, `[año]-07-01` y `[año]-10-01` para hacer referencia al primer, segundo, tercero y cuarto trimestre, respectivamente. 
-- `GID_1` : Columna con tipo de dato cadena de *texto* que es un identificador alfanumérico único usado para para designar el límite administrativo subnacional principal de un país. Para los departamentos de El Salvador, contamos con los siguientes GID_1 , los cuales son los valores posibles que puede tomar la columna `GID_1`: 
+- `datetime` : Columna con tipo de dato cadena de *texto* el cual indica el trimestre. Los trimestres siguen el siguiente formato : `[año]-01-01`,  `[año]-04-01`, `[año]-07-01` y `[año]-10-01` para hacer referencia al primer, segundo, tercero y cuarto trimestre, respectivamente.
+- `GID_1` : Columna con tipo de dato cadena de *texto* que es un identificador alfanumérico único usado para para designar el límite administrativo subnacional principal de un país. Para los departamentos de El Salvador, contamos con los siguientes GID_1 , los cuales son los valores posibles que puede tomar la columna `GID_1`:
 
 #table(
   columns: 2,
   // Use the first row as the header
   table.header(..gid1_slv.at(0).map(name => [*#name*])),
   // Use everything after the first row as body data
-  ..gid1_slv.slice(1).flatten()
+  ..gid1_slv.slice(1).flatten(),
 )
 
 - `electricidad_departamento` : Columna con tipo de dato Flotante que contiene el consumo de energía eléctrica *en escala logarítmica*.
@@ -401,10 +416,10 @@ La siguiente figura muestra un ejemplo del formato que debe tener el archivo csv
   caption: [Formato del archivo csv del consumo de energía eléctrica subnacional],
 )
 
-=== Geoespaciales 
-Las covariables geoespaciales se actualizan periódicamente mediante las APIs de Google Earth Engine y VIIRS BlackMarble de acuerdo a la política de calendarización definida en las DAGs de Apache Airflow. 
+=== Geoespaciales
+Las covariables geoespaciales se actualizan periódicamente mediante las APIs de Google Earth Engine y VIIRS BlackMarble de acuerdo a la política de calendarización definida en las DAGs de Apache Airflow.
 
-Es necesario tener activas las DAGs de actualización de las covariables geoespaciales. Las DAGs correspondientes a estas tareas son las que inician con el prefijo `fetch`. 
+Es necesario tener activas las DAGs de actualización de las covariables geoespaciales. Las DAGs correspondientes a estas tareas son las que inician con el prefijo `fetch`.
 
 
 #figure(
@@ -412,6 +427,21 @@ Es necesario tener activas las DAGs de actualización de las covariables geoespa
   caption: [Activación de DAGs de actualización de covariables geoespaciales],
 )
 
+== Actualización de Tokens
+=== Luces VIIRS Black Marble
+
+- Se requiere de la creación de una cuenta (email y contraseña) para acceder al conjunto de datos de NASA Earth Data.
+  Leer con detenimiento las instrucciones del repositorio del paquete blackmarbler en la siguiente #link("https://worldbank.github.io/blackmarbler/")[liga]
+- Sigue los pasos para crear un token.
+
+=== GDP constante trimestral de EEUU
+
+Tenga en cuenta que no puede #link("https://fredaccount.stlouisfed.org/login/secure/")[solicitar ni ver sus claves de API] sin antes iniciar sesión en su cuenta de usuario de  #link("https://fredaccount.stlouisfed.org/login/secure/")[fredaccount.stlouisfed.org].
+- Todas las solicitudes de servicios web requieren una clave de API para identificar las solicitudes.
+- Los desarrolladores deben solicitar una clave de API distinta para cada aplicación que desarrollen.
+- Todos los usuarios de una aplicación deberán utilizar su propia clave de API.
+
+La clave de API se establece mediante la variable `api_key`, una cadena alfanumérica de 32 caracteres en minúsculas.
 
 == Opciones de Despliegue en GCP
 === Google Compute Engine (Máquina virtual)
@@ -433,11 +463,11 @@ siguientes:
   radius: (right: 4pt),
   width: 100%,
 )[
-  *Nota:* En el repositorio del sistema se encuentra la configuración de Terraform para levantar una instancia de Google Compute Engine. 
+  *Nota:* En el repositorio del sistema se encuentra la configuración de Terraform para levantar una instancia de Google Compute Engine.
 
   En la configuración se levanta una instancia `e2-standard-4` con 2 CPU virtuales + 4 GB de memoria y una estimación mensual de USD24.46.
 
-  Para inicializar el directorio de trabajo local que contiene archivos de configuración de Terraform, se usa la instrucción : 
+  Para inicializar el directorio de trabajo local que contiene archivos de configuración de Terraform, se usa la instrucción :
   ```terminal
   terraform init
   ```
@@ -455,8 +485,8 @@ siguientes:
   ```
 
 ]
-==== Requerimientos de la Máquina Virtual 
-El servicio de Apache Airflow consume muchos recursos. Se recomienda asignar a la máquina virtual al menos 8 CPU y 8 GB de RAM para el funcionamiento efectivo de la aplicación. La aplicación no es intensiva en almacenamiento de datos. Se recomienda asignar un almacenamiento de 500GB de espacio en disco. 
+==== Requerimientos de la Máquina Virtual
+El servicio de Apache Airflow consume muchos recursos. Se recomienda asignar a la máquina virtual al menos 8 CPU y 8 GB de RAM para el funcionamiento efectivo de la aplicación. La aplicación no es intensiva en almacenamiento de datos. Se recomienda asignar un almacenamiento de 500GB de espacio en disco.
 
 === Google Kubernetes Engine (GKE)
 
@@ -494,7 +524,7 @@ Esta es la opción menos recomendada dado el alto costo del servicio.
   ..roles.slice(1).flatten()
 )
 
-== Credenciales del Cliente de Google Sheets 
+== Credenciales del Cliente de Google Sheets
 
 Para habilitar y utilizar la API de Google Sheets con Python, se debe configurar un proyecto en Google Cloud Console.
 
@@ -508,10 +538,10 @@ Para habilitar y utilizar la API de Google Sheets con Python, se debe configurar
 
 Elija alguno de los dos métodos de autenticación:
 
- 
+
 - OAuth 2.0 (aplicaciones de escritorio): Ve a Credenciales > Crear credenciales > ID de cliente de OAuth. Selecciona «Aplicación de escritorio», descarga el archivo JSON.
 - Cuenta de servicio (scripts automatizados): Ve a Crear credenciales > Cuenta de servicio. Una vez creada, dirígete a la pestaña Claves, haz clic en Añadir clave > Crear nueva clave (JSON) y descárgala.
- - Paso crucial: Abre el archivo JSON, busca el `client_email` y comparte tu hoja de cálculo de Google con esa dirección de correo electrónico otorgando permisos de editor. *Aquí el adminsitrador de sistema debe compartir el google sheets donde se guardan los resultados de los modelos con `client_email`*.
+  - Paso crucial: Abre el archivo JSON, busca el `client_email` y comparte tu hoja de cálculo de Google con esa dirección de correo electrónico otorgando permisos de editor. *Aquí el adminsitrador de sistema debe compartir el google sheets donde se guardan los resultados de los modelos con `client_email`*.
 
 
 == Credenciales del Cliente de Google Earth Engine para Autenticación No interactiva (Service Account)
@@ -524,3 +554,8 @@ Para flujos de trabajo automatizados, servidores o entornos de computación en l
 2. Registrar la cuenta: Asegúrese de que el correo electrónico de la cuenta de servicio esté registrado para acceder a Earth Engine.
 
 3. Utiliza el archivo de clave: en tu script de Python, emplea el siguiente código, sustituyendo `my-service-account@...gserviceaccount.com` y `.private-key.json` por tus propios datos:
+
+== Respaldos de Información
+=== Compute Engine instant snapshots
+https://cloud.google.com/blog/products/compute/introducing-compute-engine-instant-snapshots
+=== Bucket `respaldo`

@@ -15,6 +15,7 @@ def build_general_config() -> Dict[str,str]:
         "start_date" : os.getenv("start_date"), 
         "LSIB" : os.getenv("LSIB"), 
         "BUCKET_NAME" : os.getenv("BUCKET_NAME"), 
+        "BUCKET_RESPALDO" : os.getenv("BUCKET_RESPALDO"), 
         "service_account_gee" : os.getenv("service_account_gee"), 
         "gee_project" : os.getenv("gee_project")
     }

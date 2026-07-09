@@ -10,6 +10,7 @@ ENVS_VARS = [
         "start_date",
         "LSIB",
         "BUCKET_NAME",
+        "BUCKET_RESPALDO",
         "service_account_gee",
         "gee_project",
         "RUSTFS_DNS",

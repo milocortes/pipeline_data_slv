@@ -428,8 +428,19 @@ outputs_tables = {
     "tc-interanual-historico-pronostico-modelos-ml" : ajusta_df(tc_interanual_historico_pronostico_modelos_ml)
 }
 
+#### Guarda respaldo de los pronósticos en el Bucket `respaldo`
+console.print("5.-", "Guardamos Tablas en el Bucket `respaldo`", style="bold red")
+
+for tabla,datos in outputs_tables.items():
+    
+    pl.from_pandas(datos.replace("",np.nan)).write_delta(
+        f"s3://{config['BUCKET_RESPALDO']}/{tabla}",
+        storage_options=storage_options,
+        mode = "overwrite"
+    )
+
 #### Exportamos tablas a GS
-console.print("5.-", "Exportamos Tablas a GS", style="bold red")
+console.print("6.-", "Exportamos Tablas a GS", style="bold red")
 
 for sheet_name, worksheet in worksheets.items():
     # Upload data (headers + values)
