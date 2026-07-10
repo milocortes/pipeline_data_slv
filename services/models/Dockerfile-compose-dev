@@ -11,7 +11,8 @@ FROM astral/uv:python3.12-bookworm-slim
 #ENV RUSTFS_PORT="9000"
 
 RUN mkdir -p /config/api_keys
-COPY pronosticos-493700-56f57502ffb3.json /config/api_keys
+#COPY pronosticos-493700-56f57502ffb3.json /config/api_keys
+COPY pronostico-pib-geoespacial-37cb2912b945.json /config/api_keys
 COPY ./services/models/utils /utils 
 COPY ./services/models/pyproject.toml /pyproject.toml
 COPY ./services/models/uv.lock /uv.lock

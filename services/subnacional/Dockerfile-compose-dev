@@ -5,7 +5,9 @@ ARG R_VERSION=4.2.2.20221110-2
 
 ## Copia configuración de Python
 RUN mkdir -p /config/api_keys
-COPY pronosticos-493700-56f57502ffb3.json /config/api_keys
+#COPY pronosticos-493700-56f57502ffb3.json /config/api_keys
+COPY pronostico-pib-geoespacial-37cb2912b945.json /config/api_keys
+
 COPY ./services/subnacional/pyproject.toml /pyproject.toml
 COPY ./services/subnacional/uv.lock /uv.lock
 COPY ./services/subnacional/.python-version /.python-version

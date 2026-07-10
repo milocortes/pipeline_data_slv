@@ -10,7 +10,8 @@ COPY ./services/fetch_load_data/geojson/gadm41_SLV_0.geojson /geojson/gadm41_SLV
 COPY ./services/fetch_load_data/geojson/gadm41_SLV_1.geojson /geojson/gadm41_SLV_1.geojson
 
 RUN mkdir -p /config/api_keys
-COPY pib-geoespacial-3ba5fc82e62c.json /config/api_keys
+#COPY pib-geoespacial-3ba5fc82e62c.json /config/api_keys
+COPY pronostico-pib-geoespacial-37cb2912b945.json /config/api_keys
 
 COPY ./services/fetch_load_data/blackmarblepy_dist /blackmarblepy_dist
 COPY ./services/fetch_load_data/tasks /tasks 
