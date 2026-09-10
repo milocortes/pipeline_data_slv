@@ -8,7 +8,11 @@ COPY ./services/streamlit_app/metadata /metadata
 COPY ./services/streamlit_app/models /models
 COPY ./services/streamlit_app/pages /pages
 COPY ./services/streamlit_app/utils /utils
+COPY ./services/streamlit_app/backend /backend
+COPY ./services/streamlit_app/db /db
+COPY ./services/streamlit_app/.streamlit /.streamlit
 
+COPY ./services/streamlit_app/secrets.toml /secrets.toml
 COPY ./services/streamlit_app/streamlit_app.py /streamlit_app.py
 
 # Sincronizamos el proyecto uv
