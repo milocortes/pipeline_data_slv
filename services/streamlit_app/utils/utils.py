@@ -10,6 +10,7 @@ from streamlit_echarts import st_pyecharts
 import pyecharts.options as opts
 from pyecharts.charts import Line
 import pandas as pd 
+import numpy as np 
 
 import time 
 
@@ -422,6 +423,34 @@ departamento_to_gid = {'Ahuachapán': 'SLV_1',
  'Sonsonate': 'SLV_13',
  'Usulután': 'SLV_14'}
 
+GID = {
+    'Total AHUACHAPÁN' : 'SLV_1',
+    'Total CABAÑAS' : 'SLV_2',
+    'Total CHALATENANGO' : 'SLV_3',
+    'Total CUSCATLÁN' : 'SLV_4',
+    'Total LA LIBERTAD' : 'SLV_5',
+    'Total LA PAZ' : 'SLV_6',
+    'Total LA UNIÓN' : 'SLV_7',
+    'Total MORAZÁN' : 'SLV_8',
+    'Total SAN MIGUEL' : 'SLV_9',
+    'Total SAN SALVADOR' : 'SLV_10',
+    'Total SAN VICENTE' : 'SLV_11',
+    'Total SANTA ANA' : 'SLV_12',
+    'Total SONSONATE' : 'SLV_13',
+    'Total USULUTÁN' : 'SLV_14',
+ }
+
+def month2quarter(month : str):
+    match month:
+        case 'ENERO' | 'FEBRERO' | 'MARZO':
+            return '-01-01'
+        case 'ABRIL' | 'MAYO' | 'JUNIO':
+            return '-04-01'
+        case 'JULIO' | 'AGOSTO' | 'SEPTIEMBRE':
+            return '-07-01'
+        case 'OCTUBRE' | 'NOVIEMBRE' | 'DICIEMBRE':
+            return '-10-01'
+
 departamentos_lista = list(departamento_to_gid.keys())
 
 ## Función que crea la gráfica de serie de tiempo y tiene boton de carga de archivo para el componente subnacional
@@ -500,15 +529,51 @@ def time_series_plot_subnacional(ts_var : str,
         if "upload_key" not in st.session_state:
             st.session_state["upload_key"] = 0
 
-        uploaded_file = st.file_uploader("**Sube los datos**", key=st.session_state["upload_key"], type=["csv"])
+        uploaded_file = st.file_uploader("**Sube los datos**", key=st.session_state["upload_key"], type=["xlsx"])
 
         if uploaded_file !=None:
+            electricidad_departamento = pd.read_excel(uploaded_file, skiprows=1)
+
+            electricidad_departamento["AÑO"] = electricidad_departamento["AÑO"].ffill()
+            electricidad_departamento["DEPARTAMENTO"] = electricidad_departamento["DEPARTAMENTO"].ffill()
+
+            cond_anio_TOTAL = electricidad_departamento["AÑO"].apply(lambda x : str(x).startswith("TOTAL"))
+            cond_anio_total = electricidad_departamento["AÑO"].apply(lambda x : str(x).startswith("Total"))
+            cond_depto = electricidad_departamento["DEPARTAMENTO"].apply(lambda x : str(x).startswith("Total"))
+
+            electricidad_departamento = electricidad_departamento[(~cond_anio_TOTAL) & (~cond_anio_total) &(cond_depto)]
+
+            electricidad_departamento["DEPARTAMENTO"] = electricidad_departamento["DEPARTAMENTO"].replace(GID)
+
+            electricidad_departamento.drop(columns = ["DISTRITO", "MUNICIPIO"])
+
+            electricidad_departamento = electricidad_departamento.drop(columns = ["DISTRITO", "MUNICIPIO"])
+
+            electricidad_departamento = electricidad_departamento.melt(
+                    id_vars=['AÑO', 'DEPARTAMENTO']
+                ).dropna().query("AÑO >= 2012")
+
+            electricidad_departamento["variable"] = electricidad_departamento["variable"].apply(month2quarter)
+
+            electricidad_departamento["datetime"] = electricidad_departamento["AÑO"].astype(str) + electricidad_departamento["variable"]
+
+            electricidad_departamento = electricidad_departamento.rename(columns = {"DEPARTAMENTO" : "GID_1", "value" : "electricidad_departamento"})
+
+            electricidad_departamento = electricidad_departamento[["datetime", "GID_1", "electricidad_departamento"]]
+
+            electricidad_departamento = electricidad_departamento.groupby(["datetime", "GID_1"]).sum().reset_index()
+
+            electricidad_departamento["electricidad_departamento"] = np.log(electricidad_departamento["electricidad_departamento"])
+
+            electricidad_departamento = electricidad_departamento.sort_values(["GID_1", "datetime"]).reset_index(drop = True)
+
+
             ### Cargamos y guardamos en Delta Lake el archivo suministrado por el usuario
             ## Cargamos datos suministrados por el usuario
-            electricidad_departamento = pl.read_csv(uploaded_file)
+            #electricidad_departamento = pl.read_csv(uploaded_file)
             
             ## Casteamos fechas en String a datetime
-            electricidad_departamento = electricidad_departamento.with_columns(
+            electricidad_departamento = pl.from_pandas(electricidad_departamento).with_columns(
                     pl.col("datetime").str.to_datetime()
                 )
 
@@ -520,6 +585,12 @@ def time_series_plot_subnacional(ts_var : str,
                     )
 
             st.session_state["upload_key"] += 1
+            
+            ### Mensaje de acción exitosa
+            st.success('La tabla se actualizó exitosamente', icon="✅")
+
+            time.sleep(1)
+
             ### Booteamos la aplicación para cargar los datos recientemente actualizados
             st.rerun()
 
