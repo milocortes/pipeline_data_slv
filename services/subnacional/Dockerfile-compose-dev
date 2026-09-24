@@ -16,7 +16,7 @@ RUN uv sync
 ## Instala R
 # 2. Pin and install specific R components
 # Note: You may need to add the CRAN repository first if the version isn't in default Debian repos
-RUN apt-get update && apt-get install -y --no-install-recommends default-jre default-jdk\
+RUN apt-get update && apt-get install -y --no-install-recommends default-jre default-jdk cmake\
     r-base-core=${R_VERSION} \
     r-base-dev=${R_VERSION} \
     r-recommended=${R_VERSION} \

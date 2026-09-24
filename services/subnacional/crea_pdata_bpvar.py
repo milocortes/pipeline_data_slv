@@ -26,12 +26,14 @@ lee_tabla = lambda cov :  pl.read_delta(
 ####  Covariables Endógenas
 #### ----------------------- ###
 
-gdp = lee_tabla("gdp_ppp_departamento")
+gdp = lee_tabla("gdp_ppp_departamento").drop_nulls()
 electricidad = lee_tabla("electricidad_departamento")
 viirs = lee_tabla("viirs_bm_sum_departamento")
 pob = lee_tabla("poblacion_departamento").with_columns(
     pl.col("poblacion_departamento").log()
 )
+
+gdp_nacional = lee_tabla("gdp_us_corriente")
 
 #### ----------------------- ###
 ####  Covariables Exógenas
@@ -43,15 +45,26 @@ remesas = lee_tabla("remesas_usd_trim")
 ####  Consolida tabla Covariables Endógenas
 #### --------------------------------------- ###
  
-datos = gdp.join(
+#datos = gdp.join(
+#    pob, on = ["datetime", "GID_1"]
+#).join(
+#    electricidad, on = ["datetime", "GID_1"]
+#).join(
+#    viirs, on = ["datetime", "GID_1"]
+#)
+
+datos = electricidad.join(
+    viirs, on = ["datetime", "GID_1"]
+).join(
     pob, on = ["datetime", "GID_1"]
 ).join(
-    electricidad, on = ["datetime", "GID_1"]
-).join(
-    viirs, on = ["datetime", "GID_1"]
+    gdp, on = ["datetime", "GID_1"], how = "left"
 )
 
-last_quarter = datos.select(pl.col("datetime").max()).item()
+#last_quarter = datos.select(pl.col("datetime").max()).item()
+last_quarter = gdp_nacional.select(pl.col("datetime").max()).item()
+
+datos = datos.filter(pl.col("datetime") <= last_quarter)
 
 ### Tabla con datos históricos
 historico = datos.filter(

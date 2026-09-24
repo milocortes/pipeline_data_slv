@@ -1,11 +1,15 @@
   library(zoo)
   library(xlsx)
+  library(lubridate)
   library("bpvars")
   library("BGVAR")
 
   ## Cargamos datos longitudinales
   pdata_slv_gdp <- excel_to_list(file = "panel_data_subnacional.xlsx", first_column_as_time=TRUE, skipsheet=NULL)
   pdata_slv_gdp_forecast <- excel_to_list(file = "panel_data_subnacional_forecast.xlsx", first_column_as_time=TRUE, skipsheet=NULL)
+
+  ## Calculamos Horizonte de pronóstico
+  horizonte = (interval(end(pdata_slv_gdp$SLV_1), end(pdata_slv_gdp_forecast$SLV_1)) %/% months(3))
 
   exogenous_values <- excel_to_list(file = "panel_data_subnacional_exo.xlsx", first_column_as_time=TRUE, skipsheet=NULL)
   exogenous_forecast_values <- excel_to_list(file = "panel_data_subnacional_exo_forecast.xlsx", first_column_as_time=TRUE, skipsheet=NULL)
@@ -46,7 +50,7 @@
     post,
     exogenous_forecast = exogenous_forecast_values,  
     conditional_forecast = pdata_slv_gdp_forecast,    # estimation output
-    horizon = 11                                      # forecast horizon
+    horizon = horizonte                                      # forecast horizon
   )
 
   #plot(fore, "SLV_1", main = "Forecasts for Colombia")
